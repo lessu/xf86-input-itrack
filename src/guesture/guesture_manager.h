@@ -51,14 +51,19 @@ struct guesture_manager_s
             GUESTURE_MANAGER_CALLBACK_END,
         }                    callback_state;
         struct itrack_staged_status_s *current_staged;
+        int                     max_touches_number;
     }private;
-
+    struct guesture_item_s        *alt_guesture;
+    // struct timeval                 alt_exceed_time;
     int                            physical_button;
 };
 
+/** manager api */
 void guesture_manager_init(struct guesture_manager_s *manager);
 
 int  guesture_manager_add(struct guesture_manager_s *manager,struct guesture_s *guesture,void *userdata,int priority);
+
+struct guesture_item_s *guesture_manager_find_item_by_name(struct guesture_manager_s *manager,const char *name);
 
 /**
  * mouse event
@@ -78,7 +83,8 @@ Bool guesture_manager_is_accept(struct guesture_manager_s *manager,struct guestu
 
 void guesture_manager_set_guesture_state_change(struct guesture_manager_s *manager,struct guesture_s *guesture);
 
+void guesture_manager_set_alt(struct guesture_manager_s *manager,struct guesture_item_s *item);
 
-
+void guesture_manager_clear_alt(struct guesture_manager_s *manager,struct guesture_item_s *item);
 
 // void guesture_manager_set_point_move(struct guesture_s *guesture,int x,int y);

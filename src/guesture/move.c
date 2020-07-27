@@ -77,7 +77,7 @@ static struct guesture_callbacks_s s_callbacks = {
 };
 
 void move_guesture_init(struct move_guesture_s *guesture){
-    guesture_init(&guesture->guesture,&s_callbacks,guesture);
+    guesture_init(&guesture->guesture,"move",&s_callbacks,guesture);
     guesture->physical_button_settle            = PHYSICAL_BUTTON_SETTLE_NONE;
     guesture->guesture.props.required_touches   = 1;
 }

@@ -63,7 +63,7 @@ typedef struct
 	struct guesture_manager_s guesture_manager;
 } touch_handler_t;
 
-void touch_handler_init(touch_handler_t *handler);
+void touch_handler_init(touch_handler_t *handler,const struct itrack_props_s *props);
 void touch_handler_deinit(touch_handler_t *handler);
 
 void on_touch_start(touch_handler_t *handler, const struct Touch *touch,int touch_count,const struct Touch *touchelist,int touchbit,struct itrack_staged_status_s *staged,const struct itrack_props_s *props);
@@ -76,4 +76,4 @@ void on_touch_invalid(touch_handler_t *handler,const struct Touch *touch,int tou
 
 void on_physical_button_update(touch_handler_t *handler,const struct timeval *evtime,int physical_button_state,struct itrack_staged_status_s *staged);
 
-void touch_handler_set_post_scrolling_state(touch_handler_t *handler,Bool on,const struct timeval *time);
+void touch_handler_set_post_scrolling_state(touch_handler_t *handler,Bool on,const struct timeval *time,const struct itrack_props_s *props);

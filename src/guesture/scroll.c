@@ -2,7 +2,7 @@
 #include "guesture_manager.h"
 #include "guesture.h"
 #include <assert.h>
-#define SCROLL_INERTIA_MULTIPLIER (2.0f)
+#define SCROLL_INERTIA_MULTIPLIER (3.0f)
 #define SIN_30 (0.5f)
 #define SIN_60 (0.86602540378444f)
 #define SIN_45 (0.707f)
@@ -155,7 +155,7 @@ static struct guesture_callbacks_s s_callbacks = {
 };
 
 void scroll_guesture_init(struct scroll_guesture_s *guesture){
-    guesture_init(&guesture->guesture,&s_callbacks,guesture);
+    guesture_init(&guesture->guesture,"scroll",&s_callbacks,guesture);
 
     guesture->guesture.props.required_touches = 2;
     guesture->cfg.inertial_scroll_multiplier  = SCROLL_INERTIA_MULTIPLIER;

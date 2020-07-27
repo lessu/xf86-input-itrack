@@ -7,7 +7,7 @@
 #include "mtstate.h"
 #include "common.h" 
 #define MAX_TOUCH_COUNT (10)
-
+#define MAX_GUESTURE_NAME_LENGTH (32)
 struct itrack_staged_status_s;
 struct Touch;
 
@@ -43,6 +43,7 @@ struct guesture_callbacks_s
 
 struct guesture_manager_s;
 struct guesture_s {
+    char name[MAX_GUESTURE_NAME_LENGTH];
     struct guesture_props_s         props;
     struct guesture_status_s        status;
     struct guesture_callbacks_s     callbacks;
@@ -50,6 +51,10 @@ struct guesture_s {
     struct itrack_staged_status_s   staged;
 };
 
-void guesture_init(struct guesture_s *guesture,const struct guesture_callbacks_s *callbacks,void* userdata);
+void guesture_init(struct guesture_s *guesture,const char *name,const struct guesture_callbacks_s *callbacks,void* userdata);
 
 void guesture_set_match(struct guesture_s *guesture,enum guesture_set_match_status_e set_match,struct timeval time);
+
+// Bool guesture_set_alt(struct guesture_s *guesture);
+
+// void guesture_clear_alt(struct guesture_s *guesture);

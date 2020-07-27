@@ -64,23 +64,29 @@ static void touch_state_reset( touch_handler_t *handler ){
 
 }
 
-void touch_handler_init(touch_handler_t *handler){
+void touch_handler_init(touch_handler_t *handler,const struct itrack_props_s *props){
 	struct guesture_manager_s  *manager = &handler->guesture_manager;
     touch_state_reset(handler);
 	handler->state.special_type = SpecialTyoe_None;
 
 
-	struct move_guesture_s *move_guesture = malloc(sizeof(struct move_guesture_s));
-	struct tap_guesture_s  *tap_guesture  = malloc(sizeof(struct tap_guesture_s));
+	struct move_guesture_s    *move_guesture    = malloc(sizeof(struct move_guesture_s));
+	struct tap_guesture_s     *tap1_guesture    = malloc(sizeof(struct tap_guesture_s));
+	struct tap_guesture_s     *tap2_guesture    = malloc(sizeof(struct tap_guesture_s));
+	struct tap_guesture_s     *tap3_guesture    = malloc(sizeof(struct tap_guesture_s));
 	struct scroll_guesture_s  *scroll_guesture  = malloc(sizeof(struct scroll_guesture_s));
 
     move_guesture_init(move_guesture);
-	tap_guesture_init(tap_guesture,1);
+	tap_guesture_init(tap1_guesture,1);
+	tap_guesture_init(tap2_guesture,2);
+	tap_guesture_init(tap3_guesture,3);
 	scroll_guesture_init(scroll_guesture);
 
 	guesture_manager_init(manager);
     guesture_manager_add(manager,&move_guesture->guesture,move_guesture,1);
-	guesture_manager_add(manager,&tap_guesture->guesture,tap_guesture,32);
+	guesture_manager_add(manager,&tap1_guesture->guesture,tap1_guesture,32);
+	guesture_manager_add(manager,&tap2_guesture->guesture,tap2_guesture,33);
+	guesture_manager_add(manager,&tap3_guesture->guesture,tap3_guesture,34);
 	guesture_manager_add(manager,&scroll_guesture->guesture,scroll_guesture,16);
 
 }
@@ -401,10 +407,20 @@ void on_physical_button_update(touch_handler_t *handler,const struct timeval *ev
 	handler->last_physical_button = physical_button_state;
 }
 
-void touch_handler_set_post_scrolling_state(touch_handler_t *handler,Bool on,const struct timeval *time){
+void touch_handler_set_post_scrolling_state(touch_handler_t *handler,Bool on,const struct timeval *time,const struct itrack_props_s *props){
 	LOG_DEBUG("touch_handler_set_post_scrolling_state on=%s time=(%ld,%ld)",on?"ON":"OFF",time->tv_sec,time->tv_usec);
-	handler->scroll_state.is_inertia_sliding = on;
-	if( on == FALSE){
-		timercp(&handler->scroll_state.last_off_time , time);
+	if(props->cfg.api == 2){
+		struct guesture_item_s *item = guesture_manager_find_item_by_name(&handler->guesture_manager,"scroll");
+		assert(item);
+		if( on ){
+			guesture_manager_set_alt(&handler->guesture_manager,item);
+		}else{
+			guesture_manager_clear_alt(&handler->guesture_manager,item);
+		}
+	}else{
+		handler->scroll_state.is_inertia_sliding = on;
+		if( on == FALSE){
+			timercp(&handler->scroll_state.last_off_time , time);
+		}
 	}
 }

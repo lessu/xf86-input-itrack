@@ -17,7 +17,7 @@ static void on_post_stage_inertia_scroll_state_change(const struct post_stage_s 
 	itrack_t *itrack = userdata;
 	struct timeval time;
  	gettimeofday(&time, NULL);
-	touch_handler_set_post_scrolling_state(&itrack->private.touch,state,&time);
+	touch_handler_set_post_scrolling_state(&itrack->private.touch,state,&time,&itrack->props);
 }
 
 int itrack_open(itrack_t *itrack, int fd){
@@ -30,7 +30,7 @@ int itrack_open(itrack_t *itrack, int fd){
 	}
 	hwstate_init(&itrack->hs , &itrack->props.caps);
 	mtstate_init(&itrack->status.state);
-	touch_handler_init(&itrack->private.touch);
+	touch_handler_init(&itrack->private.touch,&itrack->props);
 	itrack_post_init(&itrack->private.post_stage_handler);
 	itrack_post_set_on_inertia_scroll_state_change_callback(&itrack->private.post_stage_handler,on_post_stage_inertia_scroll_state_change,itrack);
 	return 0;

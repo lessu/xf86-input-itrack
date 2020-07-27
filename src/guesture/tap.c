@@ -91,6 +91,7 @@ static struct guesture_callbacks_s s_callbacks = {
 };
 
 void tap_guesture_init(struct tap_guesture_s *guesture,int touch_count){
-    guesture_init(&guesture->guesture,&s_callbacks,guesture);
+    guesture_init(&guesture->guesture,"tap",&s_callbacks,guesture);
+    sprintf(guesture->guesture.name+strlen(guesture->guesture.name),"%d",touch_count);
     guesture->guesture.props.required_touches = touch_count;
 }
