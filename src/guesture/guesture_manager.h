@@ -2,8 +2,8 @@
 #include "guesture.h"
 
 #define MAX_GUESTURE_COUNT (32)
-#define GUESTURE_PRE_WAITING_TIME  (100)
-#define GUESTURE_PRE_WAITTING_DIST (30)
+#define GUESTURE_PRE_WAITING_TIME  (150)
+#define GUESTURE_PRE_WAITTING_DIST (60)
 // #define GUESTURE_POST_WAITING_TIME (200)
 
 struct itrack_staged_status_s;

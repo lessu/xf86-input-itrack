@@ -209,21 +209,23 @@ guesture_init:
     }
 // handler:
     if(manager->private.state == MANAGER_STATE_UPDATING){
-        // do normal update
-        if( manager->private.accepted_item != NULL ){
+        if(touch_idx == 0){   
+            // do normal update
+            if( manager->private.accepted_item != NULL ){
 
-            s_guesture_update(manager,manager->private.accepted_item,touchlist,manager->private.updating_touchbit);
+                s_guesture_update(manager,manager->private.accepted_item,touchlist,manager->private.updating_touchbit);
 
-        }else{
-            for(int i = 0 ; i < manager->private.current_guesture_count ; i ++ ){
-                struct guesture_item_s *item = manager->private.current_guesture_item_list[i];
-                s_guesture_update(manager,item,touchlist,manager->private.updating_touchbit);
+            }else{
+                for(int i = 0 ; i < manager->private.current_guesture_count ; i ++ ){
+                    struct guesture_item_s *item = manager->private.current_guesture_item_list[i];
+                    s_guesture_update(manager,item,touchlist,manager->private.updating_touchbit);
+                }
             }
-        }
-    
-        if(manager->private.accepted_item != NULL){
-            /** doing accept one update event */
-            *staged = manager->private.accepted_item->guesture->staged;
+        
+            if(manager->private.accepted_item != NULL){
+                /** doing accept one update event */
+                *staged = manager->private.accepted_item->guesture->staged;
+            }
         }
     }
     

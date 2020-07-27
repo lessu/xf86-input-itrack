@@ -52,6 +52,14 @@ dist-hook: ChangeLog
 AM_CFLAGS = $(XORG_CFLAGS) 
 CFLAGS = -g -std=gnu99 -Wno-declaration-after-statement -I$(top_srcdir)/include/ -I$(top_srcdir)/src -I$(top_srcdir)/src/guesture
 
+noinst_LTLIBRARIES = libguesture.la
+libguesture_la_CFLAGS=$(AM_CFLAGS) -D__DEBUG__
+libguesture_ladir   = @inputdir@
+libguesture_la_SOURCES  =  src/guesture/guesture_manager.c \
+                        src/guesture/guesture.c \
+                        src/guesture/move.c \
+                        src/guesture/tap.c \
+                        src/guesture/scroll.c
 
 @DRIVER_NAME@_drv_la_LTLIBRARIES = @DRIVER_NAME@_drv.la
 @DRIVER_NAME@_drv_la_LDFLAGS = -module -avoid-version
@@ -59,6 +67,7 @@ CFLAGS = -g -std=gnu99 -Wno-declaration-after-statement -I$(top_srcdir)/include/
 
 #AM_CPPFLAGS=
 
+@DRIVER_NAME@_drv_la_LIBADD    = libguesture.la
 @DRIVER_NAME@_drv_la_SOURCES = src/@DRIVER_NAME@.c \
                                src/@DRIVER_NAME@.h \
                                src/button-axle.c \
@@ -72,23 +81,14 @@ CFLAGS = -g -std=gnu99 -Wno-declaration-after-statement -I$(top_srcdir)/include/
                                src/common.c \
                                src/debug.c \
                                src/touch-handler.c \
-                               src/post-stage.c \
-                               src/guesture/guesture_manager.c \
-                               src/guesture/guesture.c \
-                               src/guesture/move.c \
-                               src/guesture/tap.c
+                               src/post-stage.c
 
 debug_main_PROGRAMS = debug_main
 debug_main_CFLAGS=$(AM_CFLAGS) -D__DEBUG__
 debug_maindir       = @inputdir@
+debug_main_LDADD    = libguesture.la
 debug_main_SOURCES  = test/main.c \
                       test/simu_test.c \
                       src/common.c \
-                      src/guesture/guesture_manager.c \
-                      src/guesture/guesture.c \
-                      src/guesture/move.c \
-                      src/guesture/tap.c \
                       test/test_move.c \
                       test/test_tap.c
-                      
-

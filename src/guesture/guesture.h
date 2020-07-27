@@ -4,6 +4,7 @@
  */
 #pragma once
 #include "itrack-type.h"
+#include "mtstate.h"
 #include "common.h" 
 #define MAX_TOUCH_COUNT (10)
 

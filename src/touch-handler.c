@@ -4,6 +4,7 @@
 #include "guesture/guesture_manager.h"
 #include "guesture/tap.h"
 #include "guesture/move.h"
+#include "guesture/scroll.h"
 #define LOG_SCROLL LOG_DEBUG
 
 static int touchlist_release_count(const struct Touch *touches,int touchbit){
@@ -71,13 +72,16 @@ void touch_handler_init(touch_handler_t *handler){
 
 	struct move_guesture_s *move_guesture = malloc(sizeof(struct move_guesture_s));
 	struct tap_guesture_s  *tap_guesture  = malloc(sizeof(struct tap_guesture_s));
+	struct scroll_guesture_s  *scroll_guesture  = malloc(sizeof(struct scroll_guesture_s));
 
     move_guesture_init(move_guesture);
 	tap_guesture_init(tap_guesture,1);
-	
+	scroll_guesture_init(scroll_guesture);
+
 	guesture_manager_init(manager);
     guesture_manager_add(manager,&move_guesture->guesture,move_guesture,1);
-	guesture_manager_add(manager,&tap_guesture->guesture,tap_guesture,16);
+	guesture_manager_add(manager,&tap_guesture->guesture,tap_guesture,32);
+	guesture_manager_add(manager,&scroll_guesture->guesture,scroll_guesture,16);
 
 }
 void touch_handler_deinit(touch_handler_t *handler){
