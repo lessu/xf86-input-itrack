@@ -73,17 +73,23 @@ static void s_accept_guesture(struct guesture_manager_s *manager,struct guesture
     for(int i = 0 ; i < manager->private.current_guesture_count ; i ++ ){
         struct guesture_item_s *item = manager->private.current_guesture_item_list[i];
         if( item == accept_item){
-            LOG_DEBUG("guesture manager accept guesture<%p>\n",item->guesture);
-            manager->private.accepted_item = accept_item;
+            
         }else if( item->guesture->status.match_state == GUESTURE_MATHING || item->guesture->status.match_state == GUESTURE_OK ){
             s_guesture_end(manager,item,TRUE,0);
         }
     }
+
+    LOG_DEBUG("guesture manager accept guesture<%s>\n",accept_item->guesture->name);
+    manager->last_guesture = manager->private.accepted_item;
+    gettimeofday(&manager->last_guesture_time,NULL);
+    manager->private.accepted_item = accept_item;
+
     /**
      * todo://
      * using accept_item->guesture->staged should be replace by an conflict-resolvable way
      */ 
     apply_on_accept_callback(manager,accept_item,&accept_item->guesture->staged);
+
     manager->private.current_guesture_count = 0;
 }
 
@@ -185,11 +191,34 @@ void guesture_manager_touch_start(struct guesture_manager_s *manager,const struc
     case MANAGER_STATE_UPDATING:
         // this will cause 
         // won't accept
+
+        if(manager->private.accepted_item){
+            // stop 
+            s_guesture_end(manager,manager->private.accepted_item,FALSE,touch_count);
+            *staged = manager->private.accepted_item->guesture->staged;
+        
+        }else{
+            /** no none is acceptted now */
+            // stop all active guesture
+            for(int i = 0 ; i < manager->private.current_guesture_count ; i ++ ){
+                s_guesture_end(manager,manager->private.current_guesture_item_list[i],FALSE,touch_count);
+            }
+        
+            if(manager->private.accepted_item != NULL){
+                /** doing accept one update event */
+                *staged = manager->private.accepted_item->guesture->staged;
+            }
+        }
+
+        manager->private.accepted_item          = NULL;
+        manager->private.current_guesture_count = 0;
+        manager->private.state                  = MANAGER_STATE_WAITING;
+        manager->private.last_waitting_update   = touch->update_time;
+        // ready to restart
     break;
     /** from required touch number to un-match touch number */
-    case MANAGER_STATE_LEAVING:
+    case MANAGER_STATE_CHANGING:
         // doing nothing
-        // just waiting to NONE
     break;
     }
     manager->private.max_touches_number = touch_count;
@@ -200,25 +229,36 @@ void guesture_manager_touch_update(struct guesture_manager_s *manager,const stru
 {
     manager->private.callback_state = GUESTURE_MANAGER_CALLBACK_UPDATE;
     manager->private.current_staged = staged;
+    
     // check if max timeout or max move dist match
+    if(manager->private.state == MANAGER_STATE_CHANGING){
+
+        if( time_diff_ms(&touch->update_time,&manager->private.state_changing_until) > 0 ){
+            manager->private.state                  = MANAGER_STATE_WAITING;
+            manager->private.last_waitting_update   = touch->update_time;
+        }else{
+            goto end;
+        }
+
+    }
+    
     if( manager->private.state == MANAGER_STATE_WAITING ){
         if( manager->alt_guesture ){
-
             if( manager->alt_guesture->guesture->props.required_touches == touch_count ){
 
                 manager->private.current_guesture_item_list[0] = manager->alt_guesture;
-                manager->private.current_guesture_count = 1;
 
                 s_guesture_reset(manager,manager->alt_guesture);
                 s_guesture_start(manager,manager->alt_guesture,touchlist,touchbit);
                 
+                manager->private.current_guesture_count = 1;
                 manager->private.updating_touchbit = touchbit;
                 manager->private.state             = MANAGER_STATE_UPDATING;
                 manager->private.accepted_item     = NULL;
 
             }
+        }
 
-        }else{
             if(touch_idx == 0){
                 // time check
                 int64_t time_diff = time_diff_ms(&touch->update_time,&manager->private.last_waitting_update);
@@ -244,7 +284,6 @@ guesture_init:
             manager->private.state             = MANAGER_STATE_UPDATING;
             manager->private.accepted_item     = NULL;
         }
-    }
 // handler:
     if(manager->private.state == MANAGER_STATE_UPDATING){
         if(touch_idx == 0){   
@@ -311,7 +350,6 @@ void guesture_manager_touch_end(struct guesture_manager_s *manager,const struct 
                 /** doing accept one update event */
                 *staged = manager->private.accepted_item->guesture->staged;
             }
-
             manager->private.state = MANAGER_STATE_NONE;
         }else{
             /** is in debounce time */
@@ -343,11 +381,12 @@ void guesture_manager_touch_end(struct guesture_manager_s *manager,const struct 
         if(touch_count == 1){
             manager->private.state         = MANAGER_STATE_NONE;
         }else{
-            manager->private.state         = MANAGER_STATE_LEAVING;
+            manager->private.state         = MANAGER_STATE_CHANGING;
+            timeraddms(&touch->update_time,GUESTURE_CHANGING_TIME,&manager->private.state_changing_until);
+            // ready to restart
         }
     break;
-    /** from required touch number to un-match touch number */
-    case MANAGER_STATE_LEAVING:
+    case MANAGER_STATE_CHANGING:
         if(touch_count == 1){
             manager->private.state         = MANAGER_STATE_NONE;
         }
@@ -407,19 +446,6 @@ void guesture_manager_set_guesture_state_change(struct guesture_manager_s *manag
         }
     }
 }
-
-// void guesture_manager_set_point_move(struct guesture_s *guesture,int x,int y){
-//     LOG_DEBUG("point_move=(%d,%d)\n",x,y);
-//     assert(guesture->manager);
-//     struct itrack_staged_status_s *staged = guesture->manager->private.current_staged;
-//     if(guesture->manager->private.accepted_item == guesture){
-//         staged->pointer.x = x;
-//         staged->pointer.y = y;
-//     }else{
-
-//         s_get_item_by_guesture(guesture->manager,guesture,)
-//     }
-// }
 
 void guesture_manager_set_alt(struct guesture_manager_s *manager,struct guesture_item_s *item){
     manager->alt_guesture = item;

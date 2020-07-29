@@ -21,15 +21,15 @@ void guesture_set_match(struct guesture_s *guesture,enum guesture_set_match_stat
     case GUESTURE_SET_MATCH_STATUS_ESSENTIAL:
         guesture->status.is_essential = TRUE;
         guesture->status.match_state= GUESTURE_OK;
-        LOG_DEBUG("guesture<%p> ask essential\n",guesture);
+        LOG_DEBUG("guesture<%s> ask essential\n",guesture->name);
     break;
     case GUESTURE_SET_MATCH_STATUS_MATCH:
         guesture->status.match_state= GUESTURE_OK;
-        LOG_DEBUG("guesture<%p> ask match\n",guesture);
+        LOG_DEBUG("guesture<%s> ask match\n",guesture->name);
     break;
     case GUESTURE_SET_MATCH_STATUS_NOT_MATCH:
         guesture->status.match_state= GUESTURE_FAILED;
-        LOG_DEBUG("guesture<%p> ask not match\n",guesture);
+        LOG_DEBUG("guesture<%s> ask not match\n",guesture->name);
     break;
     }
     guesture_manager_set_guesture_state_change(guesture->manager,guesture);

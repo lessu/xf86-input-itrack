@@ -102,31 +102,9 @@ void itrack_post_deinit(struct post_stage_s *handler){
 }
 
 void itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, const struct timeval *tv,const struct itrack_staged_status_s __nonull *staged_status){
-	// if(staged_status->pointer.move_type == RELATIVE){
-		/* 
-		 * Give the HW coordinates to Xserver as absolute coordinates, these coordinates
-		 * are not scaled, this is oke if the touchscreen has the same resolution as the display.
-		 */
-		xf86PostMotionEvent(device_ptr, 
-									Relative /** absolute */, 
-									0 /** start valuator */, 
-									2 /** valuator count */,
-									/** valuators */
-									staged_status->pointer.x, staged_status->pointer.y
-							);
-	// }else if(staged_status->pointer.move_type == ABSOLUTE){
-	// 	/* 
-	// 	 * Give the HW coordinates to Xserver as absolute coordinates, these coordinates
-	// 	 * are not scaled, this is oke if the touchscreen has the same resolution as the display.
-	// 	 */
-	// 	xf86PostMotionEvent(device_ptr, 
-	// 								Absolute /** absolute */, 
-	// 								0 /** start valuator */, 
-	// 								2 /** valuator count */,
-	// 								/** valuators */
-	// 								staged_status->pointer.x, staged_status->pointer.y
-	// 						);
-	// }
+	
+	Bool pointer_move = staged_status->pointer.x !=0 || staged_status->pointer.y != 0;
+
 	// scroll
 	if(staged_status->scroll.holding == TRUE){
 		/** cancel sliding */
@@ -136,7 +114,6 @@ void itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, cons
 			if(handler->scroll.state_change_fn){
 				handler->scroll.state_change_fn(handler,handler->scroll.is_inertia_scrolling,handler->scroll.state_change_fn_userdata);
 			}
-			
 		}
 		scroll_by(device_ptr,staged_status->scroll.x,staged_status->scroll.y);
 		handler->scroll.velocity_x = staged_status->scroll.velocity_x;
@@ -164,6 +141,16 @@ void itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, cons
 			LOG_DEBUG("start inertia timer duration (%d,%d) \n",handler->scroll.arg.x.duration,handler->scroll.arg.y.duration);
 			handler->scroll.inertia_sliding_timer = TimerSet(handler->scroll.inertia_sliding_timer , 0 , handler->scroll.arg.interval , on_scroll_inertia_sliding_timer_update,handler);
 
+		}else{
+			if( pointer_move ){
+				if( handler->scroll.is_inertia_scrolling ){
+					TimerCancel(handler->scroll.inertia_sliding_timer);
+					handler->scroll.is_inertia_scrolling = FALSE;
+					if(handler->scroll.state_change_fn){
+						handler->scroll.state_change_fn(handler,handler->scroll.is_inertia_scrolling,handler->scroll.state_change_fn_userdata);
+					}
+				}
+			}
 		}
 		handler->scroll.velocity_x = handler->scroll.velocity_y = 0;
     }
@@ -238,6 +225,32 @@ void itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, cons
 			}
 		}
 	}
+
+	// if(staged_status->pointer.move_type == RELATIVE){
+		/* 
+		 * Give the HW coordinates to Xserver as absolute coordinates, these coordinates
+		 * are not scaled, this is oke if the touchscreen has the same resolution as the display.
+		 */
+		xf86PostMotionEvent(device_ptr, 
+									Relative /** absolute */, 
+									0 /** start valuator */, 
+									2 /** valuator count */,
+									/** valuators */
+									staged_status->pointer.x, staged_status->pointer.y
+							);
+	// }else if(staged_status->pointer.move_type == ABSOLUTE){
+	// 	/* 
+	// 	 * Give the HW coordinates to Xserver as absolute coordinates, these coordinates
+	// 	 * are not scaled, this is oke if the touchscreen has the same resolution as the display.
+	// 	 */
+	// 	xf86PostMotionEvent(device_ptr, 
+	// 								Absolute /** absolute */, 
+	// 								0 /** start valuator */, 
+	// 								2 /** valuator count */,
+	// 								/** valuators */
+	// 								staged_status->pointer.x, staged_status->pointer.y
+	// 						);
+	// }
 }
 void itrack_post_set_on_inertia_scroll_state_change_callback(struct post_stage_s *handler,ITrackInertiaScrollStateChangeFn fn,void *userdata){
 	handler->scroll.state_change_fn = fn;

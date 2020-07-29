@@ -4,6 +4,7 @@
 #define MAX_GUESTURE_COUNT (32)
 #define GUESTURE_PRE_WAITING_TIME  (150)
 #define GUESTURE_PRE_WAITTING_DIST (60)
+#define GUESTURE_CHANGING_TIME (150)
 // #define GUESTURE_POST_WAITING_TIME (200)
 
 struct itrack_staged_status_s;
@@ -38,7 +39,7 @@ struct guesture_manager_s
             /** guesture is updating */
             MANAGER_STATE_UPDATING,
             /** from required touch number to un-match touch number */
-            MANAGER_STATE_LEAVING
+            MANAGER_STATE_CHANGING,
         } state;
 
         int                     updating_touchbit;
@@ -54,9 +55,15 @@ struct guesture_manager_s
             GUESTURE_MANAGER_CALLBACK_END,
         }                    callback_state;
         struct itrack_staged_status_s *current_staged;
+        struct timeval                 state_changing_until;
         int                     max_touches_number;
     }private;
+    /**
+     * guesture manager will only try to match alt guesture when it is un-null
+    */
     struct guesture_item_s        *alt_guesture;
+    struct timeval                last_guesture_time;
+    struct guesture_item_s        *last_guesture;
     // struct timeval                 alt_exceed_time;
     int                            physical_button;
 
@@ -67,6 +74,7 @@ struct guesture_manager_s
         }state;
         GuestureManagerOnAcceptFn callback;
         void* userdata;
+
     } on_accept_callbacks[MAX_CALLBACK_COUNT];
 };
 
