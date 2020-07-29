@@ -31,7 +31,7 @@ static struct gue_i_vector_s s_dhistory_avg(struct scroll_guesture_s *guesture){
 }
 
 static void on_start(void *userdata,const struct Touch *touches,int touch_bit){
-    LOG_DEBUG("[scroll]on_start\n");
+    GUESTURE_DEBUG("[scroll]on_start\n");
     struct scroll_guesture_s *guesture = userdata;
     guesture->dhistory_length = 0;
     guesture->dhistory_full   = FALSE;
@@ -39,7 +39,7 @@ static void on_start(void *userdata,const struct Touch *touches,int touch_bit){
 }
 
 static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
-    LOG_DEBUG("[scroll]on_update\n");
+    GUESTURE_DEBUG("[scroll]on_update\n");
     struct scroll_guesture_s *guesture = userdata;
 	struct itrack_staged_status_s *staged = &guesture->guesture.staged;
     const struct Touch *touch = NULL;
@@ -88,7 +88,7 @@ static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
     }
     if(guesture->scroll_type != SCROLL_TYPE_FREE){
         double sin_angel = 1.0f * avg_dvect.x / sqrt(avg_dvect.x * avg_dvect.x + avg_dvect.y*avg_dvect.y );
-        LOG_DEBUG("sin_angel = %lf, type = %d\n",sin_angel,guesture->scroll_type);
+        GUESTURE_DEBUG("sin_angel = %lf, type = %d\n",sin_angel,guesture->scroll_type);
         // sin(15°) = 0.258
         Bool is_x_mode = ABSVAL(sin_angel) > SIN_45;
         Bool is_y_mode = ABSVAL(sin_angel) < SIN_45;
@@ -131,7 +131,7 @@ static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
         }
     }
     
-    LOG_DEBUG("scroll param: offset = (%.2lf,%.2lf) , velocity = (%.2lf,%.2lf) diff_ms=%ld\n",
+    GUESTURE_DEBUG("scroll param: offset = (%.2lf,%.2lf) , velocity = (%.2lf,%.2lf) diff_ms=%ld\n",
         staged->scroll.x,staged->scroll.y,
         staged->scroll.velocity_x,staged->scroll.velocity_y,
         diff_ms);
@@ -139,7 +139,7 @@ static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
 }
 
 static Bool on_end(void *userdata,Bool is_cancel,int touch_count){
-    LOG_DEBUG("[scroll]on_end\n");
+    GUESTURE_DEBUG("[scroll]on_end\n");
     struct scroll_guesture_s *guesture = userdata;
     struct itrack_staged_status_s *staged = &guesture->guesture.staged;
     /** scroll to move */

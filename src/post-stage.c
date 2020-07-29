@@ -160,10 +160,10 @@ void itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, cons
 		if( GETBIT(staged_status->physical_button , i) != GETBIT(handler->last_button_status , i) ){
 			if(GETBIT(staged_status->physical_button , i)){
 				xf86PostButtonEvent(device_ptr, FALSE, i + 1, 1, 0, 0);
-				LOG_DEBUG("button %d down\n", i);
+				// LOG_DEBUG("button %d down\n", i);
 			}else{
 				xf86PostButtonEvent(device_ptr, FALSE, i + 1, 0, 0, 0);
-				LOG_DEBUG("button %d up\n", i);
+				// LOG_DEBUG("button %d up\n", i);
 			}
 		}
 	}
@@ -172,11 +172,11 @@ void itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, cons
 	for (int i = 0; i < MAX_BUTTON_NUMBER; i++) {
 		if( GETBIT(staged_status->button.down , i) ){
 			xf86PostButtonEvent(device_ptr, FALSE, i + 1, 1, 0, 0);
-			LOG_DEBUG("button %d down\n", i);
+			// LOG_DEBUG("button %d down\n", i);
 		}
 		if( GETBIT(staged_status->button.up , i) ){
 			xf86PostButtonEvent(device_ptr, FALSE, i + 1, 0, 0, 0);
-			LOG_DEBUG("button %d up\n", i);
+			// LOG_DEBUG("button %d up\n", i);
 		}
 	}
 

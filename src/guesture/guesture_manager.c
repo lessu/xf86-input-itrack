@@ -247,7 +247,7 @@ void guesture_manager_touch_update(struct guesture_manager_s *manager,const stru
             if( manager->alt_guesture->guesture->props.required_touches == touch_count ){
 
                 manager->private.current_guesture_item_list[0] = manager->alt_guesture;
-
+                
                 s_guesture_reset(manager,manager->alt_guesture);
                 s_guesture_start(manager,manager->alt_guesture,touchlist,touchbit);
                 
@@ -259,31 +259,31 @@ void guesture_manager_touch_update(struct guesture_manager_s *manager,const stru
             }
         }
 
-            if(touch_idx == 0){
-                // time check
-                int64_t time_diff = time_diff_ms(&touch->update_time,&manager->private.last_waitting_update);
-                if(time_diff > GUESTURE_PRE_WAITING_TIME){
-                    goto guesture_init;
-                }
+        if(touch_idx == 0){
+            // time check
+            int64_t time_diff = time_diff_ms(&touch->update_time,&manager->private.last_waitting_update);
+            if(time_diff > GUESTURE_PRE_WAITING_TIME){
+                goto guesture_init;
             }
-            if( math_dist2(touch->total_dx,touch->total_dy) < GUESTURE_PRE_WAITTING_DIST * GUESTURE_PRE_WAITTING_DIST){
-                goto end;
+        }
+        if( math_dist2(touch->total_dx,touch->total_dy) < GUESTURE_PRE_WAITTING_DIST * GUESTURE_PRE_WAITTING_DIST){
+            goto end;
             }
 guesture_init:
-            s_get_matched_gesture(
-                manager,
-                touch_count,
-                manager->private.current_guesture_item_list,
-                &manager->private.current_guesture_count
-            );
-            for(int i = 0 ; i < manager->private.current_guesture_count ; i ++ ){
-                s_guesture_reset(manager,manager->private.current_guesture_item_list[i]);
-                s_guesture_start(manager,manager->private.current_guesture_item_list[i],touchlist,touchbit);
-            }
-            manager->private.updating_touchbit = touchbit;
-            manager->private.state             = MANAGER_STATE_UPDATING;
-            manager->private.accepted_item     = NULL;
+        s_get_matched_gesture(
+            manager,
+            touch_count,
+            manager->private.current_guesture_item_list,
+            &manager->private.current_guesture_count
+        );
+        for(int i = 0 ; i < manager->private.current_guesture_count ; i ++ ){
+            s_guesture_reset(manager,manager->private.current_guesture_item_list[i]);
+            s_guesture_start(manager,manager->private.current_guesture_item_list[i],touchlist,touchbit);
         }
+        manager->private.updating_touchbit = touchbit;
+        manager->private.state             = MANAGER_STATE_UPDATING;
+        manager->private.accepted_item     = NULL;
+    }
 // handler:
     if(manager->private.state == MANAGER_STATE_UPDATING){
         if(touch_idx == 0){   
@@ -363,7 +363,7 @@ void guesture_manager_touch_end(struct guesture_manager_s *manager,const struct 
             // stop 
             s_guesture_end(manager,manager->private.accepted_item,FALSE,touch_count);
             *staged = manager->private.accepted_item->guesture->staged;
-         
+        
         }else{
             /** no none is acceptted now */
             // stop all active guesture

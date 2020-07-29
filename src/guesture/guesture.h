@@ -6,6 +6,9 @@
 #include "itrack-type.h"
 #include "mtstate.h"
 #include "common.h" 
+
+#define GUESTURE_DEBUG(a,...) 
+
 #define MAX_TOUCH_COUNT (10)
 #define MAX_GUESTURE_NAME_LENGTH (32)
 struct itrack_staged_status_s;

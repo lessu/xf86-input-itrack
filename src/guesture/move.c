@@ -6,11 +6,11 @@
 #include "mtstate.h"
 
 static void on_start(void *handler,const struct Touch *touches,int touch_bit){
-    LOG_DEBUG("[move]on_start\n");
+    GUESTURE_DEBUG("[move]on_start\n");
 }
 
 static void on_update(void *handler,const struct Touch *touches,int touch_bit){
-    LOG_DEBUG("[move]on_update\n");
+    GUESTURE_DEBUG("[move]on_update\n");
     struct move_guesture_s *guesture = handler;
     const struct Touch *touch = NULL;
     
@@ -37,7 +37,7 @@ static void on_update(void *handler,const struct Touch *touches,int touch_bit){
 
         if( guesture->physical_button_settle == PHYSICAL_BUTTON_SETTLE_SETTLE ){
             if( math_dist2( touch->dx,touch->dy ) < PHYSICAL_BUTTON_MIN_MOVE * PHYSICAL_BUTTON_MIN_MOVE){
-                LOG_DEBUG("button down micro move guard\n");
+                GUESTURE_DEBUG("button down micro move guard\n");
                 goto end;
             }else{
                 /** once big movement checked out,disable micro move guard */
@@ -66,7 +66,7 @@ end:
     return ;
 }
 static Bool on_end(void *handler,Bool is_cancel,int touch_count){
-    LOG_DEBUG("[move]on_end\n");
+    GUESTURE_DEBUG("[move]on_end\n");
     return TRUE;
 }
 

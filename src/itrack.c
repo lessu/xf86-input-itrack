@@ -44,17 +44,17 @@ typedef InputInfoPtr LocalDevicePtr;
 #endif
 
 static void s_print_staged(const struct itrack_staged_status_s *out_staged_status){
-	char log[2048] = {0};
-	Bool have_change = FALSE;
-	sprintf(log,"staged={\n");
-	if(out_staged_status->pointer.x != 0 || out_staged_status->pointer.y != 0){
-		sprintf(log+strlen(log),"    pointer=(%d,%d)\n",out_staged_status->pointer.x,out_staged_status->pointer.y);
-		have_change = TRUE;
-	}
-	sprintf(log+strlen(log),"}\n");
-	if(have_change){
-		LOG_DEBUG("%s",log);
-	}
+	// char log[2048] = {0};
+	// Bool have_change = FALSE;
+	// sprintf(log,"staged={\n");
+	// if(out_staged_status->pointer.x != 0 || out_staged_status->pointer.y != 0){
+	// 	sprintf(log+strlen(log),"    pointer=(%d,%d)\n",out_staged_status->pointer.x,out_staged_status->pointer.y);
+	// 	have_change = TRUE;
+	// }
+	// sprintf(log+strlen(log),"}\n");
+	// if(have_change){
+	// 	LOG_DEBUG("%s",log);
+	// }
 }
 
 

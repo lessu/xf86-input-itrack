@@ -2,7 +2,6 @@
 #include "mtstate.h"
 #include "guesture_manager.h"
 #include <assert.h>
-#define LOG_DRAG LOG_DEBUG
 #define SWIPE3_BUTTON 		  0
 #define SWIPE3_HOLD_TIME      1000
 static void on_accpet_other(struct guesture_manager_s *manager,struct guesture_item_s *item,struct itrack_staged_status_s *staged,void *user_data);
@@ -19,7 +18,7 @@ static void on_accpet_other(struct guesture_manager_s *manager,struct guesture_i
 // }
 
 static void on_start(void *user_data,const struct Touch *touches,int touch_bit){
-    LOG_DRAG("[drag]on_start\n");
+    GUESTURE_DEBUG("[drag]on_start\n");
     struct drag_guesture_s *guesture = user_data;
     if(guesture->loaded == FALSE){
         guesture->loaded = TRUE;
@@ -30,7 +29,7 @@ static void on_start(void *user_data,const struct Touch *touches,int touch_bit){
 }
 
 static void on_update(void *user_data,const struct Touch *touches,int touch_bit){
-    LOG_DRAG("[drag]on_update\n");
+    GUESTURE_DEBUG("[drag]on_update\n");
 
 		// mstime_t timeout_from_end   = time_diff_ms(&touch->update_time,&handler->state.pseudo_endtime);
 		// mstime_t timeout_from_start = time_diff_ms(&touch->update_time,&handler->state.pseudo_starttime);
@@ -114,7 +113,7 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
 }
 
 static Bool on_end(void *user_data,Bool is_cancel,int touch_count){
-    LOG_DRAG("[drag]on_end\n");
+    GUESTURE_DEBUG("[drag]on_end\n");
     struct drag_guesture_s *guesture = user_data;
     struct itrack_staged_status_s *staged = &guesture->guesture.staged;
     // const struct Touch *touch;
@@ -138,27 +137,22 @@ static Bool on_end(void *user_data,Bool is_cancel,int touch_count){
     return TRUE;
 }
 // static void on_deinit(void *user_data){
-//     LOG_DRAG("[drag]on_end\n");
+//     GUESTURE_DEBUG("[drag]on_end\n");
 //     struct drag_guesture_s *guesture = user_data;
 // }
 static void on_accpet_other(struct guesture_manager_s *manager,struct guesture_item_s *item,struct itrack_staged_status_s *staged,void *user_data){
-    LOG_DEBUG("on_accpet_other1");
     struct drag_guesture_s *guesture = user_data;
 
     if(item->guesture != &guesture->guesture){
-        LOG_DEBUG("on_accpet_other2");
         if(guesture->hold_time.tv_sec != 0){
-            LOG_DEBUG("on_accpet_other3");
             struct timeval tv;
             gettimeofday(&tv,NULL);
             if(time_diff_ms(&tv,&guesture->hold_time) < 0){
-                LOG_DEBUG("on_accpet_other4");
                 staged->button.up                |= 1 << SWIPE3_BUTTON;
                 staged->button.defer_up.operation = DEFER_CANCEL;
             }
             guesture->hold_time.tv_sec = 0;
         }
-        
     }
 }
 
