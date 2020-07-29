@@ -5,11 +5,18 @@ void guesture_init(struct guesture_s *guesture,const char *name,const struct gue
     bzero(guesture,sizeof(struct guesture_s));
     strncpy(guesture->name,name,MAX_GUESTURE_NAME_LENGTH);
     guesture->callbacks = *callbacks;
+    guesture->userdata = userdata;
 }
 
-void guesture_set_match(struct guesture_s *guesture,enum guesture_set_match_status_e set_match,struct timeval time){
+void guesture_deinit(struct guesture_s *guesture){
+    // if( guesture->callbacks.on_deinit ){
+    //     guesture->callbacks.on_deinit(guesture->userdata);
+    // }
+}
+
+void guesture_set_match(struct guesture_s *guesture,enum guesture_set_match_status_e set_match){
     assert(guesture->status.match_state == GUESTURE_MATHING);
-    guesture->status.state_update_time = time;
+    gettimeofday(&guesture->status.state_update_time,NULL);
     switch (set_match){
     case GUESTURE_SET_MATCH_STATUS_ESSENTIAL:
         guesture->status.is_essential = TRUE;

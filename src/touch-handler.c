@@ -5,6 +5,7 @@
 #include "guesture/tap.h"
 #include "guesture/move.h"
 #include "guesture/scroll.h"
+#include "guesture/drag.h"
 #define LOG_SCROLL LOG_DEBUG
 
 static int touchlist_release_count(const struct Touch *touches,int touchbit){
@@ -63,7 +64,7 @@ static void touch_state_reset( touch_handler_t *handler ){
 	// state
 
 }
-
+static struct drag_guesture_s    *s_drag_guesture    = NULL;
 void touch_handler_init(touch_handler_t *handler,const struct itrack_props_s *props){
 	struct guesture_manager_s  *manager = &handler->guesture_manager;
     touch_state_reset(handler);
@@ -75,23 +76,27 @@ void touch_handler_init(touch_handler_t *handler,const struct itrack_props_s *pr
 	struct tap_guesture_s     *tap2_guesture    = malloc(sizeof(struct tap_guesture_s));
 	struct tap_guesture_s     *tap3_guesture    = malloc(sizeof(struct tap_guesture_s));
 	struct scroll_guesture_s  *scroll_guesture  = malloc(sizeof(struct scroll_guesture_s));
-
+	s_drag_guesture    = malloc(sizeof(struct drag_guesture_s));
     move_guesture_init(move_guesture);
 	tap_guesture_init(tap1_guesture,1);
 	tap_guesture_init(tap2_guesture,2);
 	tap_guesture_init(tap3_guesture,3);
 	scroll_guesture_init(scroll_guesture);
+	drag_guesture_init(s_drag_guesture);
 
 	guesture_manager_init(manager);
-    guesture_manager_add(manager,&move_guesture->guesture,move_guesture,1);
-	guesture_manager_add(manager,&tap1_guesture->guesture,tap1_guesture,32);
-	guesture_manager_add(manager,&tap2_guesture->guesture,tap2_guesture,33);
-	guesture_manager_add(manager,&tap3_guesture->guesture,tap3_guesture,34);
-	guesture_manager_add(manager,&scroll_guesture->guesture,scroll_guesture,16);
+    guesture_manager_add(manager,&move_guesture->guesture,1);
+	guesture_manager_add(manager,&tap1_guesture->guesture,32);
+	guesture_manager_add(manager,&tap2_guesture->guesture,33);
+	guesture_manager_add(manager,&tap3_guesture->guesture,34);
+	guesture_manager_add(manager,&scroll_guesture->guesture,16);
+	guesture_manager_add(manager,&s_drag_guesture->guesture,17);
+	
 
 }
 void touch_handler_deinit(touch_handler_t *handler){
 	struct guesture_manager_s *manager = &handler->guesture_manager;
+	drag_guesture_deinit(s_drag_guesture);
 	for(int i = 0; i < MAX_GUESTURE_COUNT; i ++ ){
         if( manager->guesture_list[i].used == USING ){
             free(manager->guesture_list[i].guesture);

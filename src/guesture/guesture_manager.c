@@ -2,6 +2,9 @@
 #include "itrack.h"
 #include "guesture_manager.h"
 #define ERROR LOG_ERROR
+
+static void apply_on_accept_callback(struct guesture_manager_s *manager,struct guesture_item_s *item,struct itrack_staged_status_s *staged);
+
 static void s_guesture_start(struct guesture_manager_s *manager,struct guesture_item_s *item,const struct Touch *touches,int touch_bit){
     const struct Touch *touch;
     int i;foreach_bit(i,touch_bit){
@@ -10,11 +13,12 @@ static void s_guesture_start(struct guesture_manager_s *manager,struct guesture_
     assert(touch != NULL);
     assert(item->guesture->status.match_state == GUESTURE_NONE);
     item->guesture->status.match_state= GUESTURE_MATHING;
-    item->guesture->callbacks.on_start(item->userdata,touches,touch_bit);
+    item->guesture->callbacks.on_start(item->guesture->userdata,touches,touch_bit);
 }
 static void s_guesture_update(struct guesture_manager_s *manager,struct guesture_item_s *item,const struct Touch *touches,int touch_bit){
     if( item->guesture->status.match_state == GUESTURE_MATHING || item->guesture->status.match_state == GUESTURE_OK ){
-        item->guesture->callbacks.on_update(item->userdata,touches,touch_bit);
+        bzero(&item->guesture->staged,sizeof(struct itrack_staged_status_s));
+        item->guesture->callbacks.on_update(item->guesture->userdata,touches,touch_bit);
     }
 }
 static Bool s_guesture_end(struct guesture_manager_s *manager,struct guesture_item_s *item,Bool cancel,int count){
@@ -22,7 +26,7 @@ static Bool s_guesture_end(struct guesture_manager_s *manager,struct guesture_it
     if( item->guesture->status.match_state == GUESTURE_MATHING || 
         item->guesture->status.match_state == GUESTURE_OK 
     ){
-        ret = item->guesture->callbacks.on_end(item->userdata,cancel,count);
+        ret = item->guesture->callbacks.on_end(item->guesture->userdata,cancel,count);
         // if(ret == TRUE){
             item->guesture->status.match_state = GUESTURE_NONE;
         // }
@@ -75,6 +79,11 @@ static void s_accept_guesture(struct guesture_manager_s *manager,struct guesture
             s_guesture_end(manager,item,TRUE,0);
         }
     }
+    /**
+     * todo://
+     * using accept_item->guesture->staged should be replace by an conflict-resolvable way
+     */ 
+    apply_on_accept_callback(manager,accept_item,&accept_item->guesture->staged);
     manager->private.current_guesture_count = 0;
 }
 
@@ -127,7 +136,7 @@ void guesture_manager_init(struct guesture_manager_s *manager){
     bzero(manager,sizeof(struct guesture_manager_s));
 }
 
-int  guesture_manager_add(struct guesture_manager_s *manager,struct guesture_s *guesture,void *userdata,int priority){
+int  guesture_manager_add(struct guesture_manager_s *manager,struct guesture_s *guesture,int priority){
     for(int i = 0; i < MAX_GUESTURE_COUNT; i ++ ){
         if( manager->guesture_list[i].used == TRUE && manager->guesture_list[i].priority == priority){
             ERROR("guesture_manager_add duplicated priority");
@@ -138,7 +147,6 @@ int  guesture_manager_add(struct guesture_manager_s *manager,struct guesture_s *
         if( manager->guesture_list[i].used       == FALSE ){
             manager->guesture_list[i].used     = TRUE;
             manager->guesture_list[i].guesture = guesture;
-            manager->guesture_list[i].userdata = userdata;
             manager->guesture_list[i].guesture->manager = manager;
             manager->guesture_list[i].priority = priority;
             break;
@@ -419,4 +427,35 @@ void guesture_manager_set_alt(struct guesture_manager_s *manager,struct guesture
 
 void guesture_manager_clear_alt(struct guesture_manager_s *manager,struct guesture_item_s *item){
     manager->alt_guesture = NULL;
+}
+
+static void apply_on_accept_callback(struct guesture_manager_s *manager,struct guesture_item_s *item,struct itrack_staged_status_s *staged){
+    for( int i = 0; i < MAX_CALLBACK_COUNT; i++ ){
+        if(manager->on_accept_callbacks[i].state == ACCEPT_CALLBACK_USING){
+            manager->on_accept_callbacks[i].callback(manager,item,staged,manager->on_accept_callbacks[i].userdata);
+        }
+    }
+}
+int guesture_manager_register_on_accept_callback(struct guesture_manager_s *manager,GuestureManagerOnAcceptFn fn,void *userdata){
+    for( int i = 0; i < MAX_CALLBACK_COUNT; i++ ){
+        if(manager->on_accept_callbacks[i].state == ACCEPT_CALLBACK_EMPTY){
+            manager->on_accept_callbacks[i].state = ACCEPT_CALLBACK_USING;
+            manager->on_accept_callbacks[i].callback = fn;
+            manager->on_accept_callbacks[i].userdata = userdata;
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int guesture_manager_unregister_on_accept_callback(struct guesture_manager_s *manager,GuestureManagerOnAcceptFn fn,void *userdata){
+    for( int i = 0; i < MAX_CALLBACK_COUNT; i++ ){
+        if(manager->on_accept_callbacks[i].state == ACCEPT_CALLBACK_USING){
+            if(manager->on_accept_callbacks[i].callback == fn && manager->on_accept_callbacks[i].userdata == userdata){
+                manager->on_accept_callbacks[i].state = ACCEPT_CALLBACK_EMPTY;
+                return 0;
+            }
+        }
+    }
+    return 1;
 }

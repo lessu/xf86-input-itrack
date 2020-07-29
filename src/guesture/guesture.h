@@ -11,6 +11,10 @@
 struct itrack_staged_status_s;
 struct Touch;
 
+struct gue_i_vector_s{
+    int x,y;
+};
+
 enum guesture_set_match_status_e{
     GUESTURE_SET_MATCH_STATUS_ESSENTIAL,
     GUESTURE_SET_MATCH_STATUS_MATCH,
@@ -39,6 +43,8 @@ struct guesture_callbacks_s
      */ 
     Bool (*on_end)(void *user_data,Bool is_cancel,int touch_count);
     // void (*on_cancel)(struct pinch_guesture_s *guesture,Bool is_cancel);
+
+    // Bool (*on_deinit)(void *user_data);
 };
 
 struct guesture_manager_s;
@@ -49,11 +55,12 @@ struct guesture_s {
     struct guesture_callbacks_s     callbacks;
     struct guesture_manager_s       *manager;
     struct itrack_staged_status_s   staged;
+    void   *userdata;
 };
 
 void guesture_init(struct guesture_s *guesture,const char *name,const struct guesture_callbacks_s *callbacks,void* userdata);
-
-void guesture_set_match(struct guesture_s *guesture,enum guesture_set_match_status_e set_match,struct timeval time);
+void guesture_deinit(struct guesture_s *guesture);
+void guesture_set_match(struct guesture_s *guesture,enum guesture_set_match_status_e set_match);
 
 // Bool guesture_set_alt(struct guesture_s *guesture);
 

@@ -33,11 +33,11 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
     if( diff_ms > TAP_TIME_MAX_HOLD_TIME){
         LOG_TAP("[tap] diff_ms > TAP_TIME_MAX_HOLD_TIME\n");
        // not a tap
-        guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_NOT_MATCH,ptouch->update_time);
+        guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_NOT_MATCH);
     }else if( dist2 > TAP_MOVE_DIST2){
         LOG_TAP("[tap] dist2 > TAP_MOVE_DIST2\n");
         // not a tap
-        guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_NOT_MATCH,ptouch->update_time);
+        guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_NOT_MATCH);
     }
     return ;
 }
@@ -52,7 +52,7 @@ static Bool on_end(void *user_data,Bool is_cancel,int touch_count){
     // if(guesture->guesture.status.end_touch_count == 1){
         
         LOG_TAP("TAP %d Recognized\n",guesture->guesture.props.required_touches);
-        guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_MATCH,time);
+        guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_MATCH);
         int tap_button = -1;
         
         if( guesture->guesture.props.required_touches == 1 ){

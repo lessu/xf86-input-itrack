@@ -183,9 +183,8 @@ void simu_test_guesture_manager_init(struct guesture_manager_s *manager){
     move_guesture_init(move_guesture);
     tap_guesture_init(tap1_guesture,1);
 	
-	guesture_manager_add(manager,&move_guesture->guesture,move_guesture,1);
-	guesture_manager_add(manager,&tap1_guesture->guesture,tap1_guesture,16);
-
+	guesture_manager_add(manager,&move_guesture->guesture,1);
+	guesture_manager_add(manager,&tap1_guesture->guesture,16);
 }
 
 void simu_test_guesture_manager_deinit(struct guesture_manager_s *manager){

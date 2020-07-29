@@ -59,7 +59,8 @@ libguesture_la_SOURCES  =  src/guesture/guesture_manager.c \
                         src/guesture/guesture.c \
                         src/guesture/move.c \
                         src/guesture/tap.c \
-                        src/guesture/scroll.c
+                        src/guesture/scroll.c \
+                        src/guesture/drag.c
 
 @DRIVER_NAME@_drv_la_LTLIBRARIES = @DRIVER_NAME@_drv.la
 @DRIVER_NAME@_drv_la_LDFLAGS = -module -avoid-version

@@ -2,7 +2,7 @@
 #include "guesture_manager.h"
 #include "guesture.h"
 #include <assert.h>
-#define SCROLL_INERTIA_MULTIPLIER (3.0f)
+#define SCROLL_INERTIA_MULTIPLIER (2.0f)
 #define SIN_30 (0.5f)
 #define SIN_60 (0.86602540378444f)
 #define SIN_45 (0.707f)
@@ -49,7 +49,6 @@ static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
         touch = touches + i;
         avg_dvect.x += touch->dx;
         avg_dvect.y += touch->dy;
-        break;
     }
     avg_dvect.x /= 2;
     avg_dvect.y /= 2;
@@ -57,7 +56,7 @@ static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
     assert(touch!=NULL);
     
     if(guesture->guesture.status.match_state == GUESTURE_MATHING){
-        guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_MATCH,touch->update_time);
+        guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_MATCH);
     }
  	
     // final algorithm 

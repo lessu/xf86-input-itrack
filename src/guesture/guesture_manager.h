@@ -1,6 +1,6 @@
 #pragma once
 #include "guesture.h"
-
+#define MAX_CALLBACK_COUNT (8)
 #define MAX_GUESTURE_COUNT (32)
 #define GUESTURE_PRE_WAITING_TIME  (150)
 #define GUESTURE_PRE_WAITTING_DIST (60)
@@ -9,6 +9,11 @@
 struct itrack_staged_status_s;
 struct itrack_props_s;
 struct guesture_s;
+struct guesture_manager_s;
+struct guesture_item_s;
+
+typedef void (*GuestureManagerOnAcceptFn)(struct guesture_manager_s *manager,struct guesture_item_s *item,struct itrack_staged_status_s *staged,void *user_data);
+
 struct guesture_item_s {
     enum {
         NO_USE = 0,
@@ -16,9 +21,7 @@ struct guesture_item_s {
     } used;
     int priority;
     struct guesture_s *guesture;
-    void   *userdata;
 };
-
 
 struct guesture_manager_s
 {
@@ -56,12 +59,25 @@ struct guesture_manager_s
     struct guesture_item_s        *alt_guesture;
     // struct timeval                 alt_exceed_time;
     int                            physical_button;
+
+    struct {
+        enum{
+            ACCEPT_CALLBACK_EMPTY = 0,
+            ACCEPT_CALLBACK_USING = 1
+        }state;
+        GuestureManagerOnAcceptFn callback;
+        void* userdata;
+    } on_accept_callbacks[MAX_CALLBACK_COUNT];
 };
+
+
+
+
 
 /** manager api */
 void guesture_manager_init(struct guesture_manager_s *manager);
 
-int  guesture_manager_add(struct guesture_manager_s *manager,struct guesture_s *guesture,void *userdata,int priority);
+int  guesture_manager_add(struct guesture_manager_s *manager,struct guesture_s *guesture,int priority);
 
 struct guesture_item_s *guesture_manager_find_item_by_name(struct guesture_manager_s *manager,const char *name);
 
@@ -87,4 +103,8 @@ void guesture_manager_set_alt(struct guesture_manager_s *manager,struct guesture
 
 void guesture_manager_clear_alt(struct guesture_manager_s *manager,struct guesture_item_s *item);
 
+int guesture_manager_register_on_accept_callback(struct guesture_manager_s *manager,GuestureManagerOnAcceptFn fn,void *userdata);
+    
+int guesture_manager_unregister_on_accept_callback(struct guesture_manager_s *manager,GuestureManagerOnAcceptFn fn,void *userdata);
+    
 // void guesture_manager_set_point_move(struct guesture_s *guesture,int x,int y);

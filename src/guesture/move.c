@@ -32,7 +32,7 @@ static void on_update(void *handler,const struct Touch *touches,int touch_bit){
             /** from no physical button pressed to pressed state */
             guesture->physical_button_settle = PHYSICAL_BUTTON_SETTLE_SETTLE;
             // handler->tap.tap_disabled = TRUE;
-            guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_ESSENTIAL,touch->update_time);
+            guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_ESSENTIAL);
         }
 
         if( guesture->physical_button_settle == PHYSICAL_BUTTON_SETTLE_SETTLE ){
@@ -55,7 +55,7 @@ static void on_update(void *handler,const struct Touch *touches,int touch_bit){
         guesture->physical_button_settle = PHYSICAL_BUTTON_SETTLE_NONE;
     }else{
         if(guesture->guesture.status.match_state == GUESTURE_MATHING){
-            guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_MATCH,touch->update_time);
+            guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_MATCH);
         }else if(guesture->guesture.status.match_state == GUESTURE_OK){
 
         }
