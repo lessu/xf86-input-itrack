@@ -83,7 +83,7 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
     avg_dvect.x /= 3;
     avg_dvect.y /= 3;
 
-    if(ABSVAL(avg_dvect.x) < 5 && ABSVAL(avg_dvect.y)  < 5){
+    if(ABSVAL(avg_dvect.x) < 2 && ABSVAL(avg_dvect.y)  < 2){
         return ;
     }
 

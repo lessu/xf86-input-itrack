@@ -79,7 +79,7 @@ static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
     staged->scroll.velocity_x = 1000.0 * speed_avg.x / diff_ms * guesture->cfg.inertial_scroll_multiplier;
     staged->scroll.velocity_y = 1000.0 * speed_avg.y / diff_ms * guesture->cfg.inertial_scroll_multiplier;
 
-    if( ABSVAL(avg_dvect.x) < 5 && ABSVAL(avg_dvect.y) < 5){
+    if( ABSVAL(avg_dvect.x) < 2 && ABSVAL(avg_dvect.y) < 2){
         staged->scroll.x = 0;
         staged->scroll.y = 0;
     }else{
