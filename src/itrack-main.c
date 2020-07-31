@@ -3,7 +3,7 @@
 #include "debug.h"
 #include "touch-handler.h"
 
-static Bool is_touch_needs_to_ignore(const struct Touch *touch){
+static bool is_touch_needs_to_ignore(const struct Touch *touch){
 	if( GETBIT(touch->flags, MT_THUMB) || GETBIT(touch->flags, MT_PALM)
 		//  ||  GETBIT(touch->flags, MT_EDGE) 
 	){
@@ -13,7 +13,7 @@ static Bool is_touch_needs_to_ignore(const struct Touch *touch){
 	}
 }
 
-static void on_post_stage_inertia_scroll_state_change(const struct post_stage_s *handler,Bool state,void* userdata){
+static void on_post_stage_inertia_scroll_state_change(const struct post_stage_s *handler,bool state,void* userdata){
 	itrack_t *itrack = userdata;
 	struct timeval time;
  	gettimeofday(&time, NULL);
@@ -30,7 +30,7 @@ int itrack_open(itrack_t *itrack, int fd){
 	}
 	hwstate_init(&itrack->hs , &itrack->props.caps);
 	mtstate_init(&itrack->status.state);
-	touch_handler_init(&itrack->private.touch,&itrack->props);
+	touch_handler_init(&itrack->private.touch,&itrack->private.post_stage_handler,&itrack->props);
 	itrack_post_init(&itrack->private.post_stage_handler);
 	itrack_post_set_on_inertia_scroll_state_change_callback(&itrack->private.post_stage_handler,on_post_stage_inertia_scroll_state_change,itrack);
 	return 0;
@@ -45,7 +45,9 @@ int itrack_close(itrack_t *itrack){
 	return 0;
 }
 
-Bool itrack_read(itrack_t *itrack,struct itrack_staged_status_s *out_staged_status){
+bool itrack_read(itrack_t *itrack){
+	/** todo:// */
+	// struct itrack_action_s *action;
 	
     int ret = hwstate_modify(&itrack->hs, &itrack->dev, itrack->fd, &itrack->props.caps);
 	if (ret <= 0)
@@ -54,22 +56,20 @@ Bool itrack_read(itrack_t *itrack,struct itrack_staged_status_s *out_staged_stat
 	
 	log_touches(itrack->status.state.touch ,itrack->status.state.touch_used);
 
-	bzero(out_staged_status,sizeof(struct itrack_staged_status_s));
-
 	// physical button
 	// static int last_button = 0;
 	// for(int i = 0; i < 32 ; i ++){
 	// 	if( GETBIT(itrack->hs.button,i) != GETBIT(last_button,i) ){
 	// 		if( GETBIT(itrack->hs.button,i) ){
 	// 			//down
-	// 			out_staged_status->button.down
+	// 			action->button.down
 	// 		}else{
 	// 			//up
 	// 		}
 	// 	}
 	// }
 	// last_button = itrack->hs.button;
-	on_physical_button_update(&itrack->private.touch,&itrack->hs.evtime,itrack->hs.button,out_staged_status);
+	on_physical_button_update(&itrack->private.touch,&itrack->hs.evtime,itrack->hs.button);
 
 	int i = 0;
 	int simulated_used = itrack->status.state.touch_used;
@@ -92,7 +92,7 @@ Bool itrack_read(itrack_t *itrack,struct itrack_staged_status_s *out_staged_stat
 			// }
 			#endif
 		}else{
-			/** this callback will read out_staged_status physical button setting make sure,out_staged_status physical button have been set at this moment*/
+			/** this callback will read action physical button setting make sure,action physical button have been set at this moment*/
 			if( GETBIT(item->flags, MT_NEW) ){
 				int j;
 				int count = 0;
@@ -100,7 +100,7 @@ Bool itrack_read(itrack_t *itrack,struct itrack_staged_status_s *out_staged_stat
 				foreach_bit(j, simulated_used){
 					count ++;
 				}
-				on_touch_start(&itrack->private.touch,item,count,itrack->status.state.touch,itrack->status.state.touch_used,out_staged_status,&itrack->props);
+				on_touch_start(&itrack->private.touch,item,count,itrack->status.state.touch,itrack->status.state.touch_used,&itrack->props);
 				
 			}else if( GETBIT(item->flags, MT_RELEASED) ){
 				int j;
@@ -108,7 +108,7 @@ Bool itrack_read(itrack_t *itrack,struct itrack_staged_status_s *out_staged_stat
 				foreach_bit(j, simulated_used){
 					count ++;
 				}
-				on_touch_release(&itrack->private.touch,item,count,itrack->status.state.touch,itrack->status.state.touch_used,out_staged_status,&itrack->props);
+				on_touch_release(&itrack->private.touch,item,count,itrack->status.state.touch,itrack->status.state.touch_used,&itrack->props);
 				CLEARBIT(simulated_used,i);
 				
 			}else if( GETBIT(item->flags, MT_INVALID) ){
@@ -117,7 +117,7 @@ Bool itrack_read(itrack_t *itrack,struct itrack_staged_status_s *out_staged_stat
 				foreach_bit(j, simulated_used){
 					count ++;
 				}
-				on_touch_invalid(&itrack->private.touch,item,count,itrack->status.state.touch,itrack->status.state.touch_used,out_staged_status,&itrack->props);
+				on_touch_invalid(&itrack->private.touch,item,count,itrack->status.state.touch,itrack->status.state.touch_used,&itrack->props);
 				CLEARBIT(simulated_used,i);
 			}else{
 				/** move update events delayed calling ,make sure move callback was called after all touch new/cancel event done*/
@@ -136,7 +136,7 @@ Bool itrack_read(itrack_t *itrack,struct itrack_staged_status_s *out_staged_stat
 		if(is_touch_needs_to_ignore(item)){
 
 		}else{
-			/** this callback will read out_staged_status physical button setting make sure,out_staged_status physical button have been set at this moment*/
+			/** this callback will read action physical button setting make sure,action physical button have been set at this moment*/
 			if( GETBIT(item->flags, MT_NEW) ){
 			}else if( GETBIT(item->flags, MT_RELEASED) ){
 			}else if( GETBIT(item->flags, MT_INVALID) ){
@@ -150,7 +150,7 @@ Bool itrack_read(itrack_t *itrack,struct itrack_staged_status_s *out_staged_stat
 					}
 					count ++;
 				}
-				on_touch_move(&itrack->private.touch,item,touch_idx,count,itrack->status.state.touch,itrack->status.state.touch_used,out_staged_status,&itrack->props);
+				on_touch_move(&itrack->private.touch,item,touch_idx,count,itrack->status.state.touch,itrack->status.state.touch_used,&itrack->props);
 			}
 		}
 	}

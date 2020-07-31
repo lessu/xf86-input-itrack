@@ -22,6 +22,7 @@
 #ifndef HWSTATE_H
 #define HWSTATE_H
 
+#define DIM_FINGER 16
 #include "common.h"
 #include "capabilities.h"
 

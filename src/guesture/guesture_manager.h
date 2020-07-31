@@ -7,13 +7,18 @@
 #define GUESTURE_CHANGING_TIME (150)
 // #define GUESTURE_POST_WAITING_TIME (200)
 
-struct itrack_staged_status_s;
-struct itrack_props_s;
+struct post_stage_s;
+struct itrack_action_s;
 struct guesture_s;
 struct guesture_manager_s;
 struct guesture_item_s;
+struct guesture_manager_action_itr_s{
+    struct itrack_action_s *action;
+    struct guesture_s      *guesture;
+    struct guesture_manager_action_itr_s *next;
+} ;
 
-typedef void (*GuestureManagerOnAcceptFn)(struct guesture_manager_s *manager,struct guesture_item_s *item,struct itrack_staged_status_s *staged,void *user_data);
+typedef void (*GuestureManagerOnAcceptFn)(struct guesture_manager_s *manager,struct guesture_item_s *item,void *user_data);
 
 struct guesture_item_s {
     enum {
@@ -47,25 +52,24 @@ struct guesture_manager_s
         struct guesture_item_s *current_guesture_item_list[MAX_GUESTURE_COUNT];
         int                     current_guesture_count;
         struct guesture_item_s *accepted_item;
-        // Bool                    guesture_state_has_changed;    
+        // bool                    guesture_state_has_changed;    
         enum{
             GUESTURE_MANAGER_CALLBACK_NONE,
             GUESTURE_MANAGER_CALLBACK_START,
             GUESTURE_MANAGER_CALLBACK_UPDATE,
             GUESTURE_MANAGER_CALLBACK_END,
         }                    callback_state;
-        struct itrack_staged_status_s *current_staged;
         struct timeval                 state_changing_until;
         int                     max_touches_number;
     }private;
+
     /**
      * guesture manager will only try to match alt guesture when it is un-null
     */
     struct guesture_item_s        *alt_guesture;
     struct timeval                last_guesture_time;
     struct guesture_item_s        *last_guesture;
-    // struct timeval                 alt_exceed_time;
-    int                            physical_button;
+    int                           physical_button;
 
     struct {
         enum{
@@ -76,14 +80,15 @@ struct guesture_manager_s
         void* userdata;
 
     } on_accept_callbacks[MAX_CALLBACK_COUNT];
+
+    // todo:// to rebuild
+    struct post_stage_s           *post_stage;
+    struct guesture_manager_action_itr_s *action_itr;
 };
 
 
-
-
-
 /** manager api */
-void guesture_manager_init(struct guesture_manager_s *manager);
+void guesture_manager_init(struct guesture_manager_s *manager,struct post_stage_s           *post_stage);
 
 int  guesture_manager_add(struct guesture_manager_s *manager,struct guesture_s *guesture,int priority);
 
@@ -92,18 +97,18 @@ struct guesture_item_s *guesture_manager_find_item_by_name(struct guesture_manag
 /**
  * mouse event
  */ 
-void guesture_manager_touch_start(struct guesture_manager_s *manager,const struct Touch *touch,int touch_count,const struct Touch *touchlist,int touchbit,struct itrack_staged_status_s *staged);
+void guesture_manager_touch_start(struct guesture_manager_s *manager,const struct Touch *touch,int touch_count,const struct Touch *touchlist,int touchbit);
 
-void guesture_manager_touch_update(struct guesture_manager_s *manager,const struct Touch *touch,int touch_idx,int touch_count,const struct Touch *touchlist,int touchbit,struct itrack_staged_status_s *staged);
+void guesture_manager_touch_update(struct guesture_manager_s *manager,const struct Touch *touch,int touch_idx,int touch_count,const struct Touch *touchlist,int touchbit);
 
-void guesture_manager_touch_end(struct guesture_manager_s *manager,const struct Touch *touch,int touch_count,const struct Touch *touchlist,int touchbit,struct itrack_staged_status_s *staged);
+void guesture_manager_touch_end(struct guesture_manager_s *manager,const struct Touch *touch,int touch_count,const struct Touch *touchlist,int touchbit);
 
 void guesture_manager_physical_button_update(struct guesture_manager_s *manager,int buttonbit);
 
 /**
  * guesture api
  */ 
-Bool guesture_manager_is_accept(struct guesture_manager_s *manager,struct guesture_s *guesture);
+bool guesture_manager_is_accept(struct guesture_manager_s *manager,struct guesture_s *guesture);
 
 void guesture_manager_set_guesture_state_change(struct guesture_manager_s *manager,struct guesture_s *guesture);
 

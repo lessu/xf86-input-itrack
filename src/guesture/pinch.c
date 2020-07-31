@@ -89,7 +89,7 @@ end:
     return ;
 }
 
-static Bool on_end(void *user_data,Bool is_cancel,int touch_count){
+static bool on_end(void *user_data,bool is_cancel,int touch_count){
     // struct pinch_guesture_s *guesture = user_data;
     GUESTURE_DEBUG("[pinch]on_end\n");
     return TRUE;

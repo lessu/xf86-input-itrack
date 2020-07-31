@@ -25,6 +25,7 @@
 #include <xorg/xf86Xinput.h>
 #include <xorg/exevents.h>
 #include <xorg/xorg-server.h>
+#include <xorg/xf86_OSproc.h>
 
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
 #include <X11/Xatom.h>
@@ -37,25 +38,25 @@
 #include "mprops.h"
 #include "itrack-main.h"
 
-# define LOG_DEBUG_DRIVER LOG_DEBUG
+# define LOG_DEBUG_DRIVER LOG_NULL
 
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
 typedef InputInfoPtr LocalDevicePtr;
 #endif
 
-static void s_print_staged(const struct itrack_staged_status_s *out_staged_status){
+// static void s_print_action(const struct itrack_action_s *action){
 	// char log[2048] = {0};
-	// Bool have_change = FALSE;
-	// sprintf(log,"staged={\n");
-	// if(out_staged_status->pointer.x != 0 || out_staged_status->pointer.y != 0){
-	// 	sprintf(log+strlen(log),"    pointer=(%d,%d)\n",out_staged_status->pointer.x,out_staged_status->pointer.y);
+	// bool have_change = FALSE;
+	// sprintf(log,"action={\n");
+	// if(action->pointer.x != 0 || action->pointer.y != 0){
+	// 	sprintf(log+strlen(log),"    pointer=(%d,%d)\n",action->pointer.x,action->pointer.y);
 	// 	have_change = TRUE;
 	// }
 	// sprintf(log+strlen(log),"}\n");
 	// if(have_change){
 	// 	LOG_DEBUG("%s",log);
 	// }
-}
+// }
 
 
 static void pointer_control(DeviceIntPtr dev, PtrCtrl *ctrl)
@@ -198,10 +199,11 @@ static void read_input(LocalDevicePtr local)
 	// int timer_kind;
 
 	itrack->local_dev = local->dev;
-	static struct itrack_staged_status_s status;
-	while ( itrack_read(itrack,&status) ){
-		s_print_staged(&status);
-		itrack_post_read( &itrack->private.post_stage_handler , itrack->local_dev , &itrack->hs.evtime , &status);
+	while ( itrack_read(itrack) ){
+		// s_print_action(&status);
+		while ( itrack_post_read( &itrack->private.post_stage_handler , itrack->local_dev , &itrack->hs.evtime) != 0){
+			// pass
+		}
 	}
 }
 

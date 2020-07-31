@@ -27,8 +27,8 @@ struct itrack_props_s;
 
 typedef struct 
 {
-	Bool start;
-	Bool max_touches_recorded;
+	bool start;
+	bool max_touches_recorded;
 	struct {
 		enum guard_settle_e physical_button_settle;
 		enum guard_settle_e pretap_settle;
@@ -38,7 +38,7 @@ typedef struct
 	} move_guard;
 	
 	struct {
-		Bool 			is_inertia_sliding;
+		bool 			is_inertia_sliding;
 		struct timeval 	last_off_time;
 	}scroll_state;
 
@@ -63,17 +63,17 @@ typedef struct
 	struct guesture_manager_s guesture_manager;
 } touch_handler_t;
 
-void touch_handler_init(touch_handler_t *handler,const struct itrack_props_s *props);
+void touch_handler_init(touch_handler_t *handler,struct post_stage_s *post_stage,const struct itrack_props_s *props);
 void touch_handler_deinit(touch_handler_t *handler);
 
-void on_touch_start(touch_handler_t *handler, const struct Touch *touch,int touch_count,const struct Touch *touchelist,int touchbit,struct itrack_staged_status_s *staged,const struct itrack_props_s *props);
+void on_touch_start(touch_handler_t *handler, const struct Touch *touch,int touch_count,const struct Touch *touchelist,int touchbit,const struct itrack_props_s *props);
 
-void on_touch_move(touch_handler_t *handler,const struct Touch *touch,int touch_idx,int touch_count,const struct Touch *touchelist,int touchbit,struct itrack_staged_status_s *staged,const struct itrack_props_s *props);
+void on_touch_move(touch_handler_t *handler,const struct Touch *touch,int touch_idx,int touch_count,const struct Touch *touchelist,int touchbit,const struct itrack_props_s *props);
 
-void on_touch_release(touch_handler_t *handler,const struct Touch *touch,int touch_count,const struct Touch *touchelist,int touchbit,struct itrack_staged_status_s *staged,const struct itrack_props_s *props);
+void on_touch_release(touch_handler_t *handler,const struct Touch *touch,int touch_count,const struct Touch *touchelist,int touchbit,const struct itrack_props_s *props);
 
-void on_touch_invalid(touch_handler_t *handler,const struct Touch *touch,int touch_count,const struct Touch *touchelist,int touchbit,struct itrack_staged_status_s *staged,const struct itrack_props_s *props);
+void on_touch_invalid(touch_handler_t *handler,const struct Touch *touch,int touch_count,const struct Touch *touchelist,int touchbit,const struct itrack_props_s *props);
 
-void on_physical_button_update(touch_handler_t *handler,const struct timeval *evtime,int physical_button_state,struct itrack_staged_status_s *staged);
+void on_physical_button_update(touch_handler_t *handler,const struct timeval *evtime,int physical_button_state);
 
-void touch_handler_set_post_scrolling_state(touch_handler_t *handler,Bool on,const struct timeval *time,const struct itrack_props_s *props);
+void touch_handler_set_post_scrolling_state(touch_handler_t *handler,bool on,const struct timeval *time,const struct itrack_props_s *props);

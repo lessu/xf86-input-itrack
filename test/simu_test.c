@@ -1,19 +1,20 @@
 #include "simu_test.h"
 #include "itrack-type.h"
+#include "post-stage.h"
 #include "trig.h"
 #include <stdio.h>
 #include <unistd.h>
 #include "guesture/move.h"
 #include "guesture/tap.h"
-static void print_staged(const struct itrack_staged_status_s *out_staged_status){
+static void print_staged(const struct itrack_action_s *action){
 	char log[2048] = {0};
-	Bool have_change = FALSE;
+	bool have_change = FALSE;
 	sprintf(log,"staged={\n");
-	if(out_staged_status->pointer.x != 0 || out_staged_status->pointer.y != 0){
-		sprintf(log+strlen(log),"    pointer=(%d,%d)\n",out_staged_status->pointer.x,out_staged_status->pointer.y);
+	if(action->pointer.x != 0 || action->pointer.y != 0){
+		sprintf(log+strlen(log),"    pointer=(%d,%d)\n",action->pointer.x,action->pointer.y);
 		have_change = TRUE;
 	}
-	if(out_staged_status->button.down !=0 || out_staged_status->button.defer_up.operation != 0){
+	if(action->button.down !=0 || action->button.defer_up.operation != 0){
 		 const char DEFER_TYPE_REPR_MAP[32][32] = {
 			"DEFER_NONE",
 			"DEFER_NEW",
@@ -22,12 +23,12 @@ static void print_staged(const struct itrack_staged_status_s *out_staged_status)
 			"DEFER_TRIGGER_IMMEDIATEY"
 		};
 		sprintf(log+strlen(log),"    button=(%d,%d) defer(op=%s,up=%d,at=[%ld,%ld])\n",
-			out_staged_status->button.down,
-			out_staged_status->button.up,
-			DEFER_TYPE_REPR_MAP[out_staged_status->button.defer_up.operation],
-			out_staged_status->button.defer_up.button,
-			out_staged_status->button.defer_up.time.tv_sec,
-			out_staged_status->button.defer_up.time.tv_usec
+			action->button.down,
+			action->button.up,
+			DEFER_TYPE_REPR_MAP[action->button.defer_up.operation],
+			action->button.defer_up.button,
+			action->button.defer_up.time.tv_sec,
+			action->button.defer_up.time.tv_usec
 		);
 		have_change = TRUE;
 	}
@@ -36,8 +37,8 @@ static void print_staged(const struct itrack_staged_status_s *out_staged_status)
 		LOG_DEBUG("%s",log);
 	}
 }
-static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch_s *multi_touch,struct itrack_staged_status_s *out_staged_status);
-static Bool is_touch_needs_to_ignore(const struct Touch *touch){
+static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch_s *multi_touch,struct itrack_action_s *action);
+static bool is_touch_needs_to_ignore(const struct Touch *touch){
 	if( GETBIT(touch->flags, MT_THUMB) || GETBIT(touch->flags, MT_PALM)
 		//  ||  GETBIT(touch->flags, MT_EDGE) 
 	){
@@ -56,15 +57,15 @@ void send_touch_sequence(struct guesture_manager_s *manager,struct multi_touch_s
     }
 	
     for(int i = 0 ; i <= max_offset_unit; i ++){
-		struct itrack_staged_status_s out_staged_status = {0};
+		struct itrack_action_s action = {0};
         for(int multi_touch_i = 0 ; multi_touch_i < count ;multi_touch_i ++){
             if( multi_touch[multi_touch_i].offset_unit == i){
 				for(int touch_i = 0 ; touch_i < multi_touch[multi_touch_i].touch_count ;touch_i ++){
 					multi_touch[multi_touch_i].touches[touch_i].last_update_time = multi_touch[multi_touch_i].touches[touch_i].update_time;
 					gettimeofday(&multi_touch[multi_touch_i].touches[touch_i].update_time,NULL);
 				}
-                dispatch_event(manager,multi_touch + i,&out_staged_status);
-				print_staged(&out_staged_status);
+                dispatch_event(manager,multi_touch + i,&action);
+				print_staged(&action);
 				usleep(11000);
 				break;
             }
@@ -72,9 +73,9 @@ void send_touch_sequence(struct guesture_manager_s *manager,struct multi_touch_s
     }
 }
 
-static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch_s *multi_touch,struct itrack_staged_status_s *out_staged_status){
+static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch_s *multi_touch,struct itrack_action_s *action){
     
-    // on_physical_button_update(&itrack->private.touch,&itrack->hs.evtime,itrack->hs.button,out_staged_status);
+    // on_physical_button_update(&itrack->private.touch,&itrack->hs.evtime,itrack->hs.button,action);
 
 	int i = 0;
 	
@@ -109,7 +110,7 @@ static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch
 			// }
 			#endif
 		}else{
-			/** this callback will read out_staged_status physical button setting make sure,out_staged_status physical button have been set at this moment*/
+			/** this callback will read action physical button setting make sure,action physical button have been set at this moment*/
 			if( GETBIT(item->flags, MT_NEW) ){
 				int j;
 				int count = 0;
@@ -117,14 +118,14 @@ static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch
 				foreach_bit(j, simulated_used){
 					count ++;
 				}
-                guesture_manager_touch_start(manager,item,count,multi_touch->touches,touch_used,out_staged_status);
+                guesture_manager_touch_start(manager,item,count,multi_touch->touches,touch_used);
 			}else if( GETBIT(item->flags, MT_RELEASED) ){
 				int j;
 				int count = 0;
 				foreach_bit(j, simulated_used){
 					count ++;
 				}
-                guesture_manager_touch_end(manager,item,count,multi_touch->touches,touch_used,out_staged_status);
+                guesture_manager_touch_end(manager,item,count,multi_touch->touches,touch_used);
 				CLEARBIT(simulated_used,i);
 				
 			}else if( GETBIT(item->flags, MT_INVALID) ){
@@ -134,8 +135,8 @@ static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch
 					count ++;
 				}
                 // on_touch_invalid
-				// on_touch_invalid(&itrack->private.touch,item,count,itrack->status.state.touch,itrack->status.state.touch_used,out_staged_status,&itrack->props);
-                guesture_manager_touch_end(manager,item,count,multi_touch->touches,touch_used,out_staged_status);
+				// on_touch_invalid(&itrack->private.touch,item,count,itrack->status.state.touch,itrack->status.state.touch_used,action,&itrack->props);
+                guesture_manager_touch_end(manager,item,count,multi_touch->touches,touch_used);
 				CLEARBIT(simulated_used,i);
 			}else{
 				/** move update events delayed calling ,make sure move callback was called after all touch new/cancel event done*/
@@ -154,7 +155,7 @@ static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch
 		if(is_touch_needs_to_ignore(item)){
 
 		}else{
-			/** this callback will read out_staged_status physical button setting make sure,out_staged_status physical button have been set at this moment*/
+			/** this callback will read action physical button setting make sure,action physical button have been set at this moment*/
 			if( GETBIT(item->flags, MT_NEW) ){
 			}else if( GETBIT(item->flags, MT_RELEASED) ){
 			}else if( GETBIT(item->flags, MT_INVALID) ){
@@ -168,8 +169,8 @@ static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch
 					}
 					count ++;
 				}
-                guesture_manager_touch_update(manager,item,touch_idx,count,multi_touch->touches,touch_used,out_staged_status);
-				// on_touch_move(&itrack->private.touch,item,touch_idx,count,itrack->status.state.touch,itrack->status.state.touch_used,out_staged_status,&itrack->props);
+                guesture_manager_touch_update(manager,item,touch_idx,count,multi_touch->touches,touch_used);
+				// on_touch_move(&itrack->private.touch,item,touch_idx,count,itrack->status.state.touch,itrack->status.state.touch_used,action,&itrack->props);
 			}
 		}
 	}
@@ -178,7 +179,7 @@ static void dispatch_event(struct guesture_manager_s *manager,struct multi_touch
 void simu_test_guesture_manager_init(struct guesture_manager_s *manager){
     struct move_guesture_s *move_guesture = malloc(sizeof(struct move_guesture_s));
 	struct tap_guesture_s  *tap1_guesture = malloc(sizeof(struct tap_guesture_s));
-    guesture_manager_init(manager);
+    guesture_manager_init(manager,NULL/** post stage is null here */);
 
     move_guesture_init(move_guesture);
     tap_guesture_init(tap1_guesture,1);
@@ -272,4 +273,10 @@ void touch_sequence_builder_add_and_next(struct touch_sequence_builder_s *builde
 void touch_sequence_builder_release(struct touch_sequence_builder_s *builder){
 	free(builder->sequence);
 	builder->sequence = NULL;
+}
+
+
+
+void itrack_post_own(struct post_stage_s *handler,struct itrack_action_s __nonull *action){
+	LOG_DEBUG("itrack_post_own\n");
 }

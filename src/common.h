@@ -68,33 +68,33 @@ typedef unsigned int bitmask_t;
 #define IT_LOG_INFO_TYPE 3
 #define IT_LOG_DEBUG_TYPE 4
 
-void itrak_msg(int type ,const char *format , ...);
-
+// void xf86Msg(int type ,const char *format , ...) __attribute__((__format__(__printf__,2,3)));
+#define LOG_NULL(...) 
 #define LOG_ERROR(...) \
 	do{ \
-		itrak_msg(IT_LOG_ERROR_TYPE, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
-		itrak_msg(IT_LOG_ERROR_TYPE, __VA_ARGS__); \
+		xf86Msg(5, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
+		xf86Msg(5, __VA_ARGS__); \
 	}while(0)
 
 #define LOG_WARNING(...) \
 	do{ \
-		itrak_msg(IT_LOG_WARNING_TYPE, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
-		itrak_msg(IT_LOG_WARNING_TYPE, __VA_ARGS__); \
+		xf86Msg(6, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
+		xf86Msg(6, __VA_ARGS__); \
 	}while(0)
 
 #define LOG_INFO(...) \
 	do{ \
-		itrak_msg(IT_LOG_INFO_TYPE, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
-		itrak_msg(IT_LOG_INFO_TYPE, __VA_ARGS__); \
+		xf86Msg(7, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
+		xf86Msg(7, __VA_ARGS__); \
 	}while(0)
 
 #define LOG_DEBUG(...) \
 	do{ \
-		itrak_msg(IT_LOG_DEBUG_TYPE, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
-		itrak_msg(IT_LOG_DEBUG_TYPE, __VA_ARGS__); \
+		xf86Msg(10, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
+		xf86Msg(10, __VA_ARGS__); \
 	}while(0)
 
-#define LOG_INFO_CONT(...) itrak_msg(IT_LOG_INFO_TYPE, "itrack[...]: " __VA_ARGS__)
+#define LOG_INFO_CONT(...) xf86Msg(10, "itrack[...]: " __VA_ARGS__)
 
 int get_next_log_number( void );
 

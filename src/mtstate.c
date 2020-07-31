@@ -23,7 +23,7 @@
 #include "mtstate.h"
 #include "trig.h"
 
-#define LOG_DEBUG_MTSTATE LOG_DEBUG
+#define LOG_DEBUG_MTSTATE LOG_NULL
 
 /* Count number of bits (Sean Eron Andersson's Bit Hacks).
  */

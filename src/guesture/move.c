@@ -1,9 +1,9 @@
-#include "common.h"
 #include "./move.h"
 #include "guesture_manager.h"
 #include <assert.h>
 #include "itrack-type.h"
 #include "mtstate.h"
+#include <stdbool.h>
 
 static void on_start(void *handler,const struct Touch *touches,int touch_bit){
     GUESTURE_DEBUG("[move]on_start\n");
@@ -32,7 +32,7 @@ static void on_update(void *handler,const struct Touch *touches,int touch_bit){
             /** from no physical button pressed to pressed state */
             guesture->physical_button_settle = PHYSICAL_BUTTON_SETTLE_SETTLE;
             // handler->tap.tap_disabled = TRUE;
-            guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_ESSENTIAL);
+            guesture_set_match(&guesture->guesture,GUESTURE_MATCH_ESSENTIAL);
         }
 
         if( guesture->physical_button_settle == PHYSICAL_BUTTON_SETTLE_SETTLE ){
@@ -55,17 +55,16 @@ static void on_update(void *handler,const struct Touch *touches,int touch_bit){
         guesture->physical_button_settle = PHYSICAL_BUTTON_SETTLE_NONE;
     }else{
         if(guesture->guesture.status.match_state == GUESTURE_MATHING){
-            guesture_set_match(&guesture->guesture,GUESTURE_SET_MATCH_STATUS_MATCH);
+            guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK);
         }else if(guesture->guesture.status.match_state == GUESTURE_OK){
 
         }
-        guesture->guesture.staged.pointer.x = touch -> dx;
-        guesture->guesture.staged.pointer.y = touch -> dy;
+        guesture_post_movment(&guesture->guesture,touch -> dx,touch -> dy,false);
     }
 end:
     return ;
 }
-static Bool on_end(void *handler,Bool is_cancel,int touch_count){
+static bool on_end(void *handler,bool is_cancel,int touch_count){
     GUESTURE_DEBUG("[move]on_end\n");
     return TRUE;
 }

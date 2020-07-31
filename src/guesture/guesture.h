@@ -5,23 +5,30 @@
 #pragma once
 #include "itrack-type.h"
 #include "mtstate.h"
-#include "common.h" 
+#include <stdbool.h>
+#include "common.h"
 
-#define GUESTURE_DEBUG(a,...) 
+#define GUESTURE_DEBUG LOG_DEBUG
 
 #define MAX_TOUCH_COUNT (10)
 #define MAX_GUESTURE_NAME_LENGTH (32)
-struct itrack_staged_status_s;
-struct Touch;
 
-struct gue_i_vector_s{
+struct guesture_s;
+struct itrack_action_s;
+struct Touch;
+/**
+ * @param action :The action is on heap,and guesture don't free it.
+ */ 
+typedef void (*GuestureActionFn)(struct guesture_s *gursture,struct itrack_action_s *action,void *user_data);
+
+struct gi_vector_s{
     int x,y;
 };
 
-enum guesture_set_match_status_e{
-    GUESTURE_SET_MATCH_STATUS_ESSENTIAL,
-    GUESTURE_SET_MATCH_STATUS_MATCH,
-    GUESTURE_SET_MATCH_STATUS_NOT_MATCH
+enum guesture_match_e{
+    GUESTURE_MATCH_ESSENTIAL,
+    GUESTURE_MATCH_OK,
+    GUESTURE_MATCH_NO
 };
 struct guesture_status_s{
     enum {
@@ -30,7 +37,7 @@ struct guesture_status_s{
         GUESTURE_FAILED,
         GUESTURE_OK,
     } match_state;
-    Bool            is_essential;
+    bool            is_essential;
     struct timeval  state_update_time;
 };
 
@@ -44,10 +51,7 @@ struct guesture_callbacks_s
     /**
      * @retval the return values is ignored
      */ 
-    Bool (*on_end)(void *user_data,Bool is_cancel,int touch_count);
-    // void (*on_cancel)(struct pinch_guesture_s *guesture,Bool is_cancel);
-
-    // Bool (*on_deinit)(void *user_data);
+    bool (*on_end)(void *user_data,bool is_cancel,int touch_count);
 };
 
 struct guesture_manager_s;
@@ -57,14 +61,36 @@ struct guesture_s {
     struct guesture_status_s        status;
     struct guesture_callbacks_s     callbacks;
     struct guesture_manager_s       *manager;
-    struct itrack_staged_status_s   staged;
-    void   *userdata;
+    void                            *userdata;
+    
+    GuestureActionFn                action_fn;
+    void                            *action_userdata;
 };
 
+/**
+ * Lifecyle
+ */ 
 void guesture_init(struct guesture_s *guesture,const char *name,const struct guesture_callbacks_s *callbacks,void* userdata);
 void guesture_deinit(struct guesture_s *guesture);
-void guesture_set_match(struct guesture_s *guesture,enum guesture_set_match_status_e set_match);
 
-// Bool guesture_set_alt(struct guesture_s *guesture);
+/**
+ * called inner guesture manager
+ */ 
+void guesture_set_post_fn(struct guesture_s *guesture,GuestureActionFn fn,void *data);
 
-// void guesture_clear_alt(struct guesture_s *guesture);
+/**
+ * called inner guesture
+ */ 
+void guesture_set_match(struct guesture_s *guesture,enum guesture_match_e set_match);
+
+/**
+ * actions
+ */ 
+void guesture_post_action(struct guesture_s *guesture,struct itrack_action_s *action);
+void guesture_post_movment(struct guesture_s *guesture,int x,int y,bool absolute);
+void guesture_post_button_up(struct guesture_s *guesture,int button_id,int defer_timeout);
+void guesture_post_button_up_cancel(struct guesture_s *guesture,int button_id);
+void guesture_post_button_down(struct guesture_s *guesture,int button_id);
+void guesture_post_button_down_and_up(struct guesture_s *guesture,int button_id,int defer_timeout);
+void guesture_post_scroll(struct guesture_s *guesture,int x,int y,double vx,double vy);
+void guesture_post_scroll_end(struct guesture_s *guesture);

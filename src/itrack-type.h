@@ -1,8 +1,9 @@
 #pragma once
 #include <sys/time.h>
 #include <stdint.h>
-#include <X11/Xdefs.h>
-struct itrack_staged_status_s{
+// #include <stdbool.h>
+// #include <X11/Xdefs.h>
+struct itrack_action_s{
     struct{
         /** button down */
         int down;
@@ -37,9 +38,8 @@ struct itrack_staged_status_s{
 
     struct {
         double x,y;
-        double last_x,last_y;
         double velocity_x,velocity_y;/** point per second */
-        Bool holding;
+        int    holding;
     } scroll;
 
 };

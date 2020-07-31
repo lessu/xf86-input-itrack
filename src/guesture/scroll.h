@@ -11,7 +11,7 @@ struct scroll_guesture_s
         float inertial_scroll_multiplier;
     } cfg;
 
-    struct gue_i_vector_s dhistory[SCROLL_GUESTURE_DHISTORY_LENGTH];
+    struct gi_vector_s dhistory[SCROLL_GUESTURE_DHISTORY_LENGTH];
     size_t dhistory_length;
     size_t dhistory_full;
 
