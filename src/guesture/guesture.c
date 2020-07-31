@@ -15,24 +15,29 @@ void guesture_deinit(struct guesture_s *guesture){
 }
 
 void guesture_set_match(struct guesture_s *guesture,enum guesture_set_match_status_e set_match){
-    assert(guesture->status.match_state == GUESTURE_MATHING);
-    gettimeofday(&guesture->status.state_update_time,NULL);
-    switch (set_match){
-    case GUESTURE_SET_MATCH_STATUS_ESSENTIAL:
-        guesture->status.is_essential = TRUE;
-        guesture->status.match_state= GUESTURE_OK;
-        LOG_DEBUG("guesture<%s> ask essential\n",guesture->name);
-    break;
-    case GUESTURE_SET_MATCH_STATUS_MATCH:
-        guesture->status.match_state= GUESTURE_OK;
-        LOG_DEBUG("guesture<%s> ask match\n",guesture->name);
-    break;
-    case GUESTURE_SET_MATCH_STATUS_NOT_MATCH:
-        guesture->status.match_state= GUESTURE_FAILED;
-        LOG_DEBUG("guesture<%s> ask not match\n",guesture->name);
-    break;
+    if(guesture->status.match_state != GUESTURE_MATHING){
+        /** guestures should always check matching status */        
+    }else{
+        gettimeofday(&guesture->status.state_update_time,NULL);
+        switch (set_match){
+        case GUESTURE_SET_MATCH_STATUS_ESSENTIAL:
+            guesture->status.is_essential = TRUE;
+            guesture->status.match_state= GUESTURE_OK;
+            LOG_DEBUG("guesture<%s> ask essential\n",guesture->name);
+        break;
+        case GUESTURE_SET_MATCH_STATUS_MATCH:
+            guesture->status.is_essential = FALSE;
+            guesture->status.match_state= GUESTURE_OK;
+            LOG_DEBUG("guesture<%s> ask match\n",guesture->name);
+        break;
+        case GUESTURE_SET_MATCH_STATUS_NOT_MATCH:
+            guesture->status.is_essential = FALSE;
+            guesture->status.match_state= GUESTURE_FAILED;
+            LOG_DEBUG("guesture<%s> ask not match\n",guesture->name);
+        break;
+        }
+        guesture_manager_set_guesture_state_change(guesture->manager,guesture);
     }
-    guesture_manager_set_guesture_state_change(guesture->manager,guesture);
 }
 
 // Bool guesture_set_alt(struct guesture_s *guesture){
