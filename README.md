@@ -20,17 +20,10 @@ It is reference [xf86-input-mtrack](https://github.com/BlueDragonX/xf86-input-mt
 
 # Todo
     * It is non-configurable,any setting parameter change needs to make a recompile
-    * (done) Scroll is an simple implementation. Future version will check angle to know user's intention,and make the best action;
-    * (done) three-finger-drag is simple implementation 
     * no four finger support now
     * two finger rotate
     * two finger pinch
     * edge ignoring
-    * (done) tap button movement debounce
-    * physical button up movement debounce
-    * (done) scroll leveas move debounce
-    * (done) scrolling ,stop by 2 finger,should not to recognize as a tap
-    * (done)scroll should have a forbiden time at begining and end, waiting for 3 finger guesture start and end.
 
 # Design
 Block diagram

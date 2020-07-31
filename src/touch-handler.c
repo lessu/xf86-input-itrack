@@ -91,7 +91,7 @@ void on_physical_button_update(touch_handler_t *handler,const struct timeval *ev
 	struct itrack_action_s *action = malloc( sizeof(struct itrack_action_s) );
 	bzero(action,sizeof(struct itrack_action_s) );
 	action->physical_button = physical_button_state;
-	// itrack_post_own(handler->guesture_manager.post_stage,action);
+	itrack_post_own(handler->guesture_manager.post_stage,action);
 	if(&handler->guesture_manager){
 		handler->guesture_manager.physical_button = physical_button_state;
 	}
