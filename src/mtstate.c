@@ -23,12 +23,7 @@
 #include "mtstate.h"
 #include "trig.h"
 
-#ifdef DEBUG_MTSTATE
-# define LOG_DEBUG_MTSTATE LOG_DEBUG
-#else
-# define LOG_DEBUG_MTSTATE LOG_DISABLED
-#endif
-
+#define LOG_DEBUG_MTSTATE LOG_DEBUG
 
 /* Count number of bits (Sean Eron Andersson's Bit Hacks).
  */
@@ -168,7 +163,6 @@ int touch_which_edge(const struct MConfig* cfg, const struct Touch* t)
 	// x > w - (cfg->edge_right_size * w)/100
 	if((x - w) * 100 > -cfg->edge_right_size * w) out += 1; // 3,6,9
 
-	LOG_INFO2(DISABLED, "x=%i y=%i out=%i w=%i h=%i\n", x,y,out,w,h);
 	return out;
 }
 

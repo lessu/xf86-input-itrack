@@ -55,8 +55,7 @@ CFLAGS = -g -std=gnu99 -Wno-declaration-after-statement -I$(top_srcdir)/include/
 noinst_LTLIBRARIES = libguesture.la
 libguesture_la_CFLAGS=$(AM_CFLAGS) -D__DEBUG__
 libguesture_ladir   = @inputdir@
-libguesture_la_SOURCES  =  src/guesture/guesture_manager.c \
-                        src/guesture/guesture.c \
+libguesture_la_SOURCES  = src/guesture/guesture.c \
                         src/guesture/move.c \
                         src/guesture/tap.c \
                         src/guesture/scroll.c \
@@ -81,16 +80,18 @@ libguesture_la_SOURCES  =  src/guesture/guesture_manager.c \
                                src/trig.c \
                                src/hwstate.c \
                                src/common.c \
+                               src/guesture/guesture_manager.c \
                                src/debug.c \
                                src/touch-handler.c \
                                src/post-stage.c
 
 debug_main_PROGRAMS = debug_main
-debug_main_CFLAGS=$(AM_CFLAGS) -D__DEBUG__
+debug_main_CFLAGS=$(AM_CFLAGS) -D__OFFLINE__
 debug_maindir       = @inputdir@
 debug_main_LDADD    = libguesture.la
 debug_main_SOURCES  = test/main.c \
                       test/simu_test.c \
                       src/common.c \
+                      src/guesture/guesture_manager.c \
                       test/test_move.c \
                       test/test_tap.c

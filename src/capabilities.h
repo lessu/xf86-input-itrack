@@ -22,7 +22,7 @@
 #ifndef CAPABILITIES_H
 #define CAPABILITIES_H
 
-#include "common.h"
+#include <mtdev-mapping.h>
 #include "button-axle.h"
 
 struct Capabilities {

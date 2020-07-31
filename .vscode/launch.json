@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/debug_main",
-            "args": ["tap"],
+            "args": ["move"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

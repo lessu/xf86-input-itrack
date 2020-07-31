@@ -23,7 +23,6 @@
 #ifndef MTSTATE_H
 #define MTSTATE_H
 
-#include "common.h"
 #include "mconfig.h"
 #include "hwstate.h"
 #include "capabilities.h"

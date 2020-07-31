@@ -22,12 +22,7 @@
 #include "mprops.h"
 #include "common.h"
 #include "itrack.h"
-
-#ifdef DEBUG_PROPS
-# define LOG_DEBUG_PROPS LOG_DEBUG
-#else
-# define LOG_DEBUG_PROPS LOG_DISABLED
-#endif
+#define LOG_DEBUG_PROPS LOG_DEBUG
 
 #define MAX_INT_VALUES 7
 #define MAX_FLOAT_VALUES 4

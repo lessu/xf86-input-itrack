@@ -27,23 +27,19 @@
 #include "config.h"
 #endif
 
-#include <xorg-server.h>
-#include <xf86.h>
-#include <xf86_OSproc.h>
-#include <xf86Xinput.h>
+#include <string.h>
 #include <errno.h>
-#include <mtdev-mapping.h>
-#include <stdint.h>
+// #include <mtdev-mapping.h>
 #include <sys/time.h>
-
-#define DIM_FINGER 16
-#define DIM_TOUCHES 16
-#define ONE_SECOND_MS (1000)
+#include <stdint.h>
 /* year-proof millisecond event time */
-typedef __u64 mstime_t;
+typedef uint64_t mstime_t;
 
 /* all bit masks have this type */
 typedef unsigned int bitmask_t;
+
+#define DIM_TOUCHES 16
+#define ONE_SECOND_MS (1000)
 
 /**
  * m - bit set (integer)
@@ -66,40 +62,39 @@ typedef unsigned int bitmask_t;
 #define SQRVAL(x) ((x) * (x))
 #define CLAMPVAL(x, min, max) MAXVAL(MINVAL(x, max), min)
 #define SGNVAL (x) ((x) < 0 ? -1 : (((x) > 0) ? 1 : 0))
-// #ifdef __DEBUG__
-// void xf86Msg(int type ,const char *format , ...);
-// #endif
+
+#define IT_LOG_ERROR_TYPE 1
+#define IT_LOG_WARNING_TYPE 2
+#define IT_LOG_INFO_TYPE 3
+#define IT_LOG_DEBUG_TYPE 4
+
+void itrak_msg(int type ,const char *format , ...);
+
 #define LOG_ERROR(...) \
 	do{ \
-		xf86Msg(X_ERROR, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
-		xf86Msg(X_ERROR, __VA_ARGS__); \
+		itrak_msg(IT_LOG_ERROR_TYPE, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
+		itrak_msg(IT_LOG_ERROR_TYPE, __VA_ARGS__); \
 	}while(0)
 
 #define LOG_WARNING(...) \
 	do{ \
-		xf86Msg(X_WARNING, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
-		xf86Msg(X_WARNING, __VA_ARGS__); \
+		itrak_msg(IT_LOG_WARNING_TYPE, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
+		itrak_msg(IT_LOG_WARNING_TYPE, __VA_ARGS__); \
 	}while(0)
 
 #define LOG_INFO(...) \
 	do{ \
-		xf86Msg(X_INFO, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
-		xf86Msg(X_INFO, __VA_ARGS__); \
+		itrak_msg(IT_LOG_INFO_TYPE, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
+		itrak_msg(IT_LOG_INFO_TYPE, __VA_ARGS__); \
 	}while(0)
-#define LOG_INFO_CONT(...) xf86Msg(X_INFO, "itrack[...]: " __VA_ARGS__)
 
-#define LOG_DISABLED(...) do { } while(0)
+#define LOG_DEBUG(...) \
+	do{ \
+		itrak_msg(IT_LOG_DEBUG_TYPE, "itrack[%i] %s:%i: ", get_next_log_number(), __FILE__, __LINE__); \
+		itrak_msg(IT_LOG_DEBUG_TYPE, __VA_ARGS__); \
+	}while(0)
 
-#define LOG_INFO_ENABLED(...) LOG_INFO(__VA_ARGS__)
-#define LOG_INFO_DISABLED(...)
-
-#define LOG_INFO2(ENABLED_or_DISABLED, ...) LOG_INFO_##ENABLED_or_DISABLED(__VA_ARGS__)
-
-#if 1
-# define LOG_DEBUG LOG_INFO
-#else
-# define LOG_DEBUG LOG_DISABLED
-#endif
+#define LOG_INFO_CONT(...) itrak_msg(IT_LOG_INFO_TYPE, "itrack[...]: " __VA_ARGS__)
 
 int get_next_log_number( void );
 
