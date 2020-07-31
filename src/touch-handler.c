@@ -6,6 +6,7 @@
 #include "guesture/move.h"
 #include "guesture/scroll.h"
 #include "guesture/drag.h"
+#include "guesture/pinch.h"
 #define LOG_SCROLL LOG_DEBUG
 
 static int touchlist_release_count(const struct Touch *touches,int touchbit){
@@ -44,7 +45,6 @@ struct defer_callback_set_value_t {
 };
 
 static void defer_callback_set_value(void *user_data){
-	LOG_DEBUG("defer_callback_set_value");
 	struct defer_callback_set_value_t *arg = user_data;
 	memcpy(arg->ptr,arg->value,arg->size);
 }
@@ -76,6 +76,7 @@ void touch_handler_init(touch_handler_t *handler,const struct itrack_props_s *pr
 	struct tap_guesture_s     *tap2_guesture    = malloc(sizeof(struct tap_guesture_s));
 	struct tap_guesture_s     *tap3_guesture    = malloc(sizeof(struct tap_guesture_s));
 	struct scroll_guesture_s  *scroll_guesture  = malloc(sizeof(struct scroll_guesture_s));
+	// struct pinch_guesture_s   *pinch_guesture   = malloc(sizeof(struct pinch_guesture_s));
 	s_drag_guesture    = malloc(sizeof(struct drag_guesture_s));
     move_guesture_init(move_guesture);
 	tap_guesture_init(tap1_guesture,1);
@@ -83,6 +84,7 @@ void touch_handler_init(touch_handler_t *handler,const struct itrack_props_s *pr
 	tap_guesture_init(tap3_guesture,3);
 	scroll_guesture_init(scroll_guesture);
 	drag_guesture_init(s_drag_guesture);
+	// pinch_guesture_init(pinch_guesture);
 
 	guesture_manager_init(manager);
     guesture_manager_add(manager,&move_guesture->guesture,1);
@@ -91,7 +93,7 @@ void touch_handler_init(touch_handler_t *handler,const struct itrack_props_s *pr
 	guesture_manager_add(manager,&tap3_guesture->guesture,34);
 	guesture_manager_add(manager,&scroll_guesture->guesture,16);
 	guesture_manager_add(manager,&s_drag_guesture->guesture,17);
-	
+	// guesture_manager_add(manager,&pinch_guesture->guesture,18);
 
 }
 void touch_handler_deinit(touch_handler_t *handler){
@@ -408,12 +410,14 @@ void on_touch_invalid(touch_handler_t *handler,const struct Touch *touch,int tou
 
 void on_physical_button_update(touch_handler_t *handler,const struct timeval *evtime,int physical_button_state,struct itrack_staged_status_s *staged){
 	staged->physical_button = physical_button_state;
-
+	if(&handler->guesture_manager){
+		handler->guesture_manager.physical_button = physical_button_state;
+	}
 	handler->last_physical_button = physical_button_state;
 }
 
 void touch_handler_set_post_scrolling_state(touch_handler_t *handler,Bool on,const struct timeval *time,const struct itrack_props_s *props){
-	LOG_DEBUG("touch_handler_set_post_scrolling_state on=%s time=(%ld,%ld)",on?"ON":"OFF",time->tv_sec,time->tv_usec);
+	LOG_DEBUG("touch_handler_set_post_scrolling_state on=%s time=(%ld,%ld)\n",on?"ON":"OFF",time->tv_sec,time->tv_usec);
 	if(props->cfg.api == 2){
 		struct guesture_item_s *item = guesture_manager_find_item_by_name(&handler->guesture_manager,"scroll");
 		assert(item);
