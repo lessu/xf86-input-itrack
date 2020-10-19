@@ -24,7 +24,6 @@ xf86-itrack.pc
 output.*
 itrack.m4
 itrack.4
-itrack.man
 .dirstamp
 traces.*
 requests
