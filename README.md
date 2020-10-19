@@ -9,6 +9,7 @@ It is reference [xf86-input-mtrack](https://github.com/BlueDragonX/xf86-input-mt
 
 # Compatibility
 * [WARNING] It is only test on my own apple-magic-trackpad 2,it should work for all moderm trackpad.
+* Test On MD101 macbook pro,2012,it works.
 
 # Feature
     * One finger move
@@ -24,6 +25,10 @@ It is reference [xf86-input-mtrack](https://github.com/BlueDragonX/xf86-input-mt
     * two finger rotate
     * two finger pinch
     * edge ignoring
+# Important 
+Must add self to input group to have permission to your touchpad
+
+`gpasswd -a lessu input`
 
 # Design
 Block diagram
@@ -64,8 +69,8 @@ EndSection
 ```
 For pointer move configuration on magic trackpad 2,I use following Options,make it close to macos.
 ```
-        Option "ConstantDeceleration" "3.000000"
-        Option "AdaptiveDeceleration" "2.500000"
+        Option "ConstantDeceleration" "10.000000"
+        Option "AdaptiveDeceleration" "5.00000"
         Option "VelocityScale" "0.2"
         Option "AccelerationProfile" "2"
 ```
