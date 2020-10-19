@@ -57,9 +57,8 @@ static void on_update(void *handler,const struct Touch *touches,int touch_bit){
         if(guesture->guesture.status.match_state == GUESTURE_MATHING){
             guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK);
         }else if(guesture->guesture.status.match_state == GUESTURE_OK){
-
+            guesture_post_movment(&guesture->guesture,touch -> dx,touch -> dy,false);
         }
-        guesture_post_movment(&guesture->guesture,touch -> dx,touch -> dy,false);
     }
 end:
     return ;

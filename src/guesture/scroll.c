@@ -2,7 +2,7 @@
 #include "guesture_manager.h"
 #include "guesture.h"
 #include <assert.h>
-#define SCROLL_INERTIA_MULTIPLIER (2.0f)
+#define SCROLL_INERTIA_MULTIPLIER (1.6f)
 #define SIN_30 (0.5f)
 #define SIN_60 (0.86602540378444f)
 #define SIN_45 (0.707f)

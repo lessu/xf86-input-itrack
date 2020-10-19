@@ -87,6 +87,7 @@ static void s_accept_guesture(struct guesture_manager_s *manager,struct guesture
         }
     }
 
+    apply_on_accept_callback(manager,accept_item);
 
     /** post staged actions */
     struct guesture_manager_action_itr_s *action_itr = manager->action_itr;
@@ -107,8 +108,6 @@ static void s_accept_guesture(struct guesture_manager_s *manager,struct guesture
     gettimeofday(&manager->last_guesture_time,NULL);
     manager->private.accepted_item = accept_item;
     guesture_set_post_fn(accept_item->guesture, s_guesture_action_accept_fn,manager);
-    apply_on_accept_callback(manager,accept_item);
-
     manager->private.current_guesture_count = 0;
 }
 

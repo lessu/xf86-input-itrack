@@ -5,7 +5,7 @@
 #define NATURE_SCROLL 1
 #define MAX_BUTTON_NUMBER 32
 #define SCROLL_INERTIA_SPEED_TRIGER 1000
-#define SCROLL_FRICTION             100000 /** decent 1000 speed persecond*/
+#define SCROLL_FRICTION             30000 /** decent 50000 speed persecond*/
 #define SCROLL_INERTIA_POST_RATE    (60) /** post 60 event per second*/
 #define STEP_DISTANCE_NEEDS 200
 
