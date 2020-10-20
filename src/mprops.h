@@ -153,38 +153,11 @@ struct MProps {
 	// Adjustable Properties
 	Atom api;
 	Atom trackpad_disable;
-// 	Atom sensitivity;
-	Atom pressure;
-// 	Atom button_settings;
-// 	Atom button_emulate_settings;
-// 	Atom button_emulate_values;
-// 	Atom tap_settings;
-// 	Atom tap_emulate;
+	// Atom pressure;
 	Atom thumb_detect;
 	Atom thumb_size;
 	Atom palm_detect;
 	Atom palm_size;
-// 	Atom gesture_settings;
-// 	Atom scroll_smooth;
-// 	struct MPropsSwipe{
-// 		Atom settings;
-// 		Atom buttons;
-// 	} scroll, swipe3, swipe4/*, swipe5*/;
-// 	Atom scroll_coast;
-// 	Atom edge_scroll;
-// 	Atom scale_dist;
-// 	Atom scale_buttons;
-// 	Atom rotate_dist;
-// 	Atom rotate_buttons;
-// 	Atom hold1_move1_stationary;
-// 	struct MPropsSwipe hold1_move1;
-// #if 0
-// 	Atom hold1_move2_stationary;
-// 	struct MPropsSwipe hold1_move2;
-// 	Atom hold1_move3_stationary;
-// 	struct MPropsSwipe hold1_move3;
-// #endif
-// 	Atom drag_settings;
 	Atom axis_invert;
 	Atom edge_sizes;
 };

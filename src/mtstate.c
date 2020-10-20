@@ -215,6 +215,8 @@ static int touch_append(struct MTState* ms,
 		ms->touch[n].dy = 0;
 		ms->touch[n].total_dx = 0;
 		ms->touch[n].total_dy = 0;
+		ms->touch[n].size_touch = fs->touch_minor;
+		ms->touch[n].size_ap = fs->touch_major;
 		SETBIT(ms->touch[n].flags, MT_NEW);
 		SETBIT(ms->touch_used, n);
 	}
@@ -248,6 +250,8 @@ static void touch_update(struct MTState* ms,
 	if (ms->touch[touch].dx != 0 || ms->touch[touch].dy != 0) {
 		ms->touch[touch].direction = trig_direction(ms->touch[touch].dx, ms->touch[touch].dy);
 	}
+	ms->touch[touch].size_touch = fs->touch_minor;
+	ms->touch[touch].size_ap    = fs->touch_major;
 	CLEARBIT(ms->touch[touch].flags, MT_NEW);
 }
 

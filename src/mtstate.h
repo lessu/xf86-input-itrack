@@ -45,6 +45,7 @@ struct Touch {
 	struct timeval create_time;
 	struct timeval update_time;
 	struct timeval last_update_time;
+	int size_touch,size_ap;
 };
 
 struct MTState {

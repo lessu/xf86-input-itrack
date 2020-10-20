@@ -94,7 +94,11 @@ typedef unsigned int bitmask_t;
 		xf86Msg(10, __VA_ARGS__); \
 	}while(0)
 
+#define LOG_DEBUG_CONT(...) xf86Msg(10, __VA_ARGS__)
+
+
 #define LOG_INFO_CONT(...) xf86Msg(10, "itrack[...]: " __VA_ARGS__)
+
 
 int get_next_log_number( void );
 
