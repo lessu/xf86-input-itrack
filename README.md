@@ -28,7 +28,7 @@ It is reference [xf86-input-mtrack](https://github.com/BlueDragonX/xf86-input-mt
 # Important 
 Must add self to input group to have permission to your touchpad
 
-`gpasswd -a lessu input`
+`gpasswd -a USERNAME input`
 
 # Design
 Block diagram
@@ -79,7 +79,7 @@ For pointer move configuration on magic trackpad 2,I use following Options,make 
 I used this way to debug.
 * 1,add a new user eg."x11_dev",with x11 permission,and configure him to able to use `startx` cmd start X11 enviroment.
 * 2,code ,make ,and install 
-* 3,swith to tty2,and login with x11_dev,run `startx -- :1` to start a new X11 instance (X11 debug env)
+* 3,switch to tty2,and login with x11_dev,run `startx -- :1` to start a new X11 instance (X11 debug env)
 * 4,retry how trackpad move
 * 5,swith to tty1(X11 coding env),goto step 2 until done
 
