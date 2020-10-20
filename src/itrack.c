@@ -110,21 +110,22 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 	SetScrollValuator(dev, 2, SCROLL_TYPE_VERTICAL,   1.0, SCROLL_FLAG_PREFERRED);
 	SetScrollValuator(dev, 3, SCROLL_TYPE_HORIZONTAL, 1.0, SCROLL_FLAG_NONE);
 
-	// local->fd = xf86OpenSerial(local->options);
-	// if (local->fd < 0) {
-	// 	LOG_ERROR("cannot open device %s\n", local->name);
-	// 	return !Success;
-	// }
-	// int rc = read_capabilities(&itrack->props.caps, itrack->fd);
-	// if (rc < 0){
-	// 	LOG_ERROR("cannot read capabilities");
-	// 	// return !Success;
-	// }
-	// output_capabilities(&itrack->props.caps);
+	local->fd = xf86OpenSerial(local->options);
+	if (local->fd < 0) {
+		LOG_ERROR("cannot open device %s\n", local->name);
+		return !Success;
+	}
+	int rc = read_capabilities(&itrack->props.caps, local->fd);
+	if (rc < 0){
+		LOG_ERROR("cannot read capabilities");
+	}
+	output_capabilities(&itrack->props.caps);
 	
-	// xf86CloseSerial(local->fd);
+	xf86CloseSerial(local->fd);
 
-	// mconfig_update_caps(&itrack->props.cfg, &itrack->props.caps);
+	local->fd = 0;
+
+	mconfig_update_caps(&itrack->props.cfg, &itrack->props.caps);
 	mprops_init(&itrack->props.cfg, local);
 
 	XIRegisterPropertyHandler(dev, mprops_set_property, NULL, NULL);
