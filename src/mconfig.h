@@ -23,7 +23,6 @@
 #define MCONFIG_H
 
 #include "capabilities.h"
-#define DEFAULT_API 1
 #define DEFAULT_TRACKPAD_DISABLE 0
 #define DEFAULT_TOUCH_DOWN 5
 #define DEFAULT_TOUCH_UP 5
@@ -125,8 +124,6 @@
 
 struct MConfig {
 	/* Used by MTState */
-
-	int api;
 
 	// Set by caps.
 	int touch_type;		// How to determine touch? 0 for none, 1 for scale, 2 for size, 3 for pressure

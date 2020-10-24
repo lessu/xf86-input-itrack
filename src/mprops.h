@@ -38,8 +38,6 @@
 #endif
 
 
-#define ITRACK_PROP_TRACKPAD_API "Trackpad API Version"
-
 // int, 1 value
 #define ITRACK_PROP_TRACKPAD_DISABLE "Trackpad Disable Input"
         
@@ -151,7 +149,6 @@ struct MProps {
 	Atom float_type;
 
 	// Adjustable Properties
-	Atom api;
 	Atom trackpad_disable;
 	// Atom pressure;
 	Atom thumb_detect;

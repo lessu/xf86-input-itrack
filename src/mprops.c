@@ -103,8 +103,6 @@ void mprops_init(struct MConfig* cfg, InputInfoPtr local) {
 			return;
 		}
 	}
-	ivals[0] = cfg->api;
-	mprops.api              = atom_init_integer(local->dev, ITRACK_PROP_TRACKPAD_API, 1, ivals, 8);
 
 	ivals[0] = cfg->trackpad_disable;
 	mprops.trackpad_disable = atom_init_integer(local->dev, ITRACK_PROP_TRACKPAD_DISABLE, 1, ivals, 8);
@@ -146,19 +144,7 @@ int mprops_set_property(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop
 	// float* fvals;
 
 	// int error_code;
-	if (property == mprops.api) {
-		if (prop->size != 1 || prop->format != 8 || prop->type != XA_INTEGER)
-			return BadMatch;
-
-		ivals8 = (uint8_t*)prop->data;
-		if (ivals8[0] < 0 || ivals8[0] > 3)
-			return BadMatch;
-
-		if (!checkonly) {
-			cfg->api = ivals8[0];
-			LOG_DEBUG_PROPS("trackpad api to %d\n" , cfg->api);
-		}
-	}else if (property == mprops.trackpad_disable) {
+	if (property == mprops.trackpad_disable) {
 		if (prop->size != 1 || prop->format != 8 || prop->type != XA_INTEGER)
 			return BadMatch;
 

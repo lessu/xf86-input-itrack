@@ -168,7 +168,6 @@ void mconfig_update_caps(struct MConfig* cfg, const struct Capabilities* caps)
 void mconfig_init_with_configure(struct MConfig* cfg, pointer opts)
 {
 	// Configure MTState
-	cfg->api        = CLAMPVAL(xf86SetIntOption(opts, "APIVersion", DEFAULT_API), 0, 8);
 	cfg->touch_down = CLAMPVAL(xf86SetIntOption(opts, "FingerHigh", DEFAULT_TOUCH_DOWN), 0, 100);
 	cfg->touch_up = CLAMPVAL(xf86SetIntOption(opts, "FingerLow", DEFAULT_TOUCH_UP), 0, 100);
 	cfg->ignore_thumb = xf86SetBoolOption(opts, "IgnoreThumb", DEFAULT_IGNORE_THUMB);

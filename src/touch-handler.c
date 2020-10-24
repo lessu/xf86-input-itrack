@@ -99,7 +99,6 @@ void on_physical_button_update(touch_handler_t *handler,const struct timeval *ev
 }
 
 void touch_handler_set_post_scrolling_state(touch_handler_t *handler,bool on,const struct timeval *time,const struct itrack_props_s *props){
-	if(props->cfg.api == 2){
 		struct guesture_item_s *item = guesture_manager_find_item_by_name(&handler->guesture_manager,"scroll");
 		assert(item);
 		if( on ){
@@ -107,10 +106,4 @@ void touch_handler_set_post_scrolling_state(touch_handler_t *handler,bool on,con
 		}else{
 			guesture_manager_clear_alt(&handler->guesture_manager,item);
 		}
-	}else{
-		handler->scroll_state.is_inertia_sliding = on;
-		if( on == FALSE){
-			timercp(&handler->scroll_state.last_off_time , time);
-		}
-	}
 }
