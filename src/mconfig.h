@@ -227,11 +227,6 @@ struct MConfig {
 // 	double sensitivity;		// Mouse movement multiplier. >= 0
 // 	int scroll_smooth;		// Enable high precision (smooth) scrolling. 0 or 1.
 };
-
-/* Load the MConfig struct with its defaults.
- */
-void mconfig_defaults(struct MConfig* cfg);
-
 /* Initialize the MConfig struct.
  */
 void mconfig_update_caps(struct MConfig* cfg,

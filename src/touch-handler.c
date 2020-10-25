@@ -99,11 +99,11 @@ void on_physical_button_update(touch_handler_t *handler,const struct timeval *ev
 }
 
 void touch_handler_set_post_scrolling_state(touch_handler_t *handler,bool on,const struct timeval *time,const struct itrack_props_s *props){
-		struct guesture_item_s *item = guesture_manager_find_item_by_name(&handler->guesture_manager,"scroll");
-		assert(item);
-		if( on ){
-			guesture_manager_set_alt(&handler->guesture_manager,item);
-		}else{
-			guesture_manager_clear_alt(&handler->guesture_manager,item);
-		}
+	struct guesture_item_s *item = guesture_manager_find_item_by_name(&handler->guesture_manager,"scroll");
+	assert(item);
+	if( on ){
+		guesture_manager_set_alt(&handler->guesture_manager,item);
+	}else{
+		guesture_manager_clear_alt(&handler->guesture_manager,item);
+	}
 }

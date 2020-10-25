@@ -59,9 +59,8 @@ typedef unsigned int bitmask_t;
 #define MINVAL(x, y) ((x) < (y) ? (x) : (y))
 #define MAXVAL(x, y) ((x) > (y) ? (x) : (y))
 #define MODVAL(x, y) ((x) - ((int)((x) / (y))) * (y))
-#define SQRVAL(x) ((x) * (x))
+
 #define CLAMPVAL(x, min, max) MAXVAL(MINVAL(x, max), min)
-#define SGNVAL (x) ((x) < 0 ? -1 : (((x) > 0) ? 1 : 0))
 
 #define IT_LOG_ERROR_TYPE 1
 #define IT_LOG_WARNING_TYPE 2

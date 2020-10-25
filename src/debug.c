@@ -1,6 +1,9 @@
 #include "debug.h"
 #include "common.h"
+
 #define DEBUG_LOGGING_ON 0
+
+#if DEBUG_LOGGING_ON
 static void log_touch(const struct Touch *touch){
     const char *status_string;
     const char *type_string;
@@ -41,8 +44,8 @@ static void log_touch(const struct Touch *touch){
         touch->create_time.tv_sec,touch->create_time.tv_usec
     );
 }
+
 void log_touches(const struct Touch *touches,int mask){
-#if DEBUG_LOGGING_ON
     LOG_DEBUG("touches = [");
     for(int i = 0; i < 32 ;i ++ ){
         if( GETBIT(mask,i) ){
@@ -50,5 +53,9 @@ void log_touches(const struct Touch *touches,int mask){
         }
     }
     LOG_DEBUG_CONT("];\n");
-#endif
 }
+#else
+
+void log_touches(const struct Touch *touches,int mask){ }
+
+#endif

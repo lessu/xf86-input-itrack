@@ -3,7 +3,8 @@
 #include <xf86_OSproc.h>
 #include <xf86Xinput.h>
 #include "post-stage.h"
-#include <string.h>
+// #include <string.h>
+
 #define LOG_ACTION LOG_NULL
 static void s_print_staged(const struct itrack_action_s *action){
 	char log[2048] = {0};

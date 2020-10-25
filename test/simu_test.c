@@ -1,7 +1,6 @@
 #include "simu_test.h"
 #include "itrack-type.h"
 #include "post-stage.h"
-#include "trig.h"
 #include <stdio.h>
 #include <unistd.h>
 #include "guesture/move.h"
@@ -199,7 +198,7 @@ void simu_test_guesture_manager_deinit(struct guesture_manager_s *manager){
 int touch_create_new(struct Touch *touch,int x,int y,int seq_num){
 	static int touch_id = 0;
 	touch->flags = 1 << MT_NEW;
-	touch->direction = TR_NONE;
+	// touch->direction = TR_NONE;
 	touch->tracking_id = touch_id;
 	touch->x = x;
 	touch->y = y;
@@ -215,7 +214,7 @@ int touch_create_new(struct Touch *touch,int x,int y,int seq_num){
 
 void touch_update_no_change(struct Touch *touch){
 	touch->flags = 0;
-	touch->direction = TR_NONE;
+	// touch->direction = TR_NONE;
 	touch->dx = 0;
 	touch->dy = 0;
 	// touch->last_update_time 	= touch->update_time;
@@ -236,7 +235,7 @@ void touch_update_offset(struct Touch *touch,int dx,int dy){
 
 void touch_update_release(struct Touch *touch){
 	touch->flags = 1 << MT_RELEASED;
-	touch->direction = TR_NONE;
+	// touch->direction = TR_NONE;
 	touch->dx = 0;
 	touch->dy = 0;
 	// touch->last_update_time 	= touch->update_time;

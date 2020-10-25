@@ -77,7 +77,6 @@ libguesture_la_SOURCES  = src/guesture/guesture.c \
                                src/mconfig.c \
                                src/mprops.c \
                                src/mtstate.c \
-                               src/trig.c \
                                src/hwstate.c \
                                src/common.c \
                                src/guesture/guesture_manager.c \

@@ -21,7 +21,6 @@
  **************************************************************************/
 
 #include "mtstate.h"
-#include "trig.h"
 
 #define LOG_DEBUG_MTSTATE LOG_NULL
 
@@ -207,7 +206,7 @@ static int touch_append(struct MTState* ms,
 		timercp(&ms->touch[n].create_time, &hs->evtime);
 		timercp(&ms->touch[n].update_time, &hs->evtime);
 		timercp(&ms->touch[n].last_update_time,&hs->evtime);
-		ms->touch[n].direction = TR_NONE;
+		// ms->touch[n].direction = TR_NONE;
 		ms->touch[n].tracking_id = fs->tracking_id;
 		ms->touch[n].x = x;
 		ms->touch[n].y = y;
@@ -247,9 +246,9 @@ static void touch_update(struct MTState* ms,
 	ms->touch[touch].y = y;
 	timercp(&ms->touch[touch].last_update_time,&ms->touch[touch].update_time);
 	timercp(&ms->touch[touch].update_time, &hs->evtime);
-	if (ms->touch[touch].dx != 0 || ms->touch[touch].dy != 0) {
-		ms->touch[touch].direction = trig_direction(ms->touch[touch].dx, ms->touch[touch].dy);
-	}
+	// if (ms->touch[touch].dx != 0 || ms->touch[touch].dy != 0) {
+	// 	ms->touch[touch].direction = trig_direction(ms->touch[touch].dx, ms->touch[touch].dy);
+	// }
 	ms->touch[touch].size_touch = fs->touch_minor;
 	ms->touch[touch].size_ap    = fs->touch_major;
 	CLEARBIT(ms->touch[touch].flags, MT_NEW);
@@ -262,7 +261,7 @@ static void touch_release(struct MTState* ms,
 {
 	ms->touch[touch].dx = 0;
 	ms->touch[touch].dy = 0;
-	ms->touch[touch].direction = TR_NONE;
+	// ms->touch[touch].direction = TR_NONE;
 	CLEARBIT(ms->touch[touch].flags, MT_NEW);
 	SETBIT(ms->touch[touch].flags, MT_RELEASED);
 }
@@ -347,45 +346,45 @@ static void touches_clean(struct MTState* ms)
 	}
 }
 
-#if DEBUG_MTSTATE
-static void mtstate_output(const struct MTState* ms,
-			const struct HWState* hs)
-{
-	int i, n;
-	struct timeval tv;
+// #if DEBUG_MTSTATE
+// static void mtstate_output(const struct MTState* ms,
+// 			const struct HWState* hs)
+// {
+// 	int i, n;
+// 	struct timeval tv;
 
-	n = bitcount(ms->touch_used);
-	if (bitcount(ms->touch_used) > 0) {
-		microtime(&tv);
-		LOG_INFO("mtstate: %d touches at event time %llu (rt %llu)\n",
-			n, timertoms(&hs->evtime), timertoms(&tv));
-	}
-	foreach_bit(i, ms->touch_used) {
-		if (GETBIT(ms->touch[i].flags, MT_RELEASED)) {
-			timersub(&hs->evtime, &ms->touch[i].down, &tv);
-			LOG_INFO("  released p(%d, %d) d(%+d, %+d) dir(%f) down(%llu) time(%lld)\n",
-						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
-						ms->touch[i].direction, timertoms(&ms->touch[i].down), timertoms(&tv));
-		}
-		else if (GETBIT(ms->touch[i].flags, MT_NEW)) {
-			LOG_INFO("  new      p(%d, %d) d(%+d, %+d) dir(%f) down(%llu)\n",
-						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
-						ms->touch[i].direction, timertoms(&ms->touch[i].down));
-		}
-		else if (GETBIT(ms->touch[i].flags, MT_INVALID)) {
-			timersub(&hs->evtime, &ms->touch[i].down, &tv);
-			LOG_INFO("  invalid  p(%d, %d) d(%+d, %+d) dir(%f) down(%llu) time(%lld)\n",
-						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
-						ms->touch[i].direction, timertoms(&ms->touch[i].down), timertoms(&tv));
-		}
-		else {
-			LOG_INFO("  touching p(%d, %d) d(%+d, %+d) dir(%f) down(%llu)\n",
-						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
-						ms->touch[i].direction, timertoms(&ms->touch[i].down));
-		}
-	}
-}
-#endif
+// 	n = bitcount(ms->touch_used);
+// 	if (bitcount(ms->touch_used) > 0) {
+// 		microtime(&tv);
+// 		LOG_INFO("mtstate: %d touches at event time %llu (rt %llu)\n",
+// 			n, timertoms(&hs->evtime), timertoms(&tv));
+// 	}
+// 	foreach_bit(i, ms->touch_used) {
+// 		if (GETBIT(ms->touch[i].flags, MT_RELEASED)) {
+// 			timersub(&hs->evtime, &ms->touch[i].down, &tv);
+// 			LOG_INFO("  released p(%d, %d) d(%+d, %+d) dir(%f) down(%llu) time(%lld)\n",
+// 						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
+// 						ms->touch[i].direction, timertoms(&ms->touch[i].down), timertoms(&tv));
+// 		}
+// 		else if (GETBIT(ms->touch[i].flags, MT_NEW)) {
+// 			LOG_INFO("  new      p(%d, %d) d(%+d, %+d) dir(%f) down(%llu)\n",
+// 						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
+// 						ms->touch[i].direction, timertoms(&ms->touch[i].down));
+// 		}
+// 		else if (GETBIT(ms->touch[i].flags, MT_INVALID)) {
+// 			timersub(&hs->evtime, &ms->touch[i].down, &tv);
+// 			LOG_INFO("  invalid  p(%d, %d) d(%+d, %+d) dir(%f) down(%llu) time(%lld)\n",
+// 						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
+// 						ms->touch[i].direction, timertoms(&ms->touch[i].down), timertoms(&tv));
+// 		}
+// 		else {
+// 			LOG_INFO("  touching p(%d, %d) d(%+d, %+d) dir(%f) down(%llu)\n",
+// 						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
+// 						ms->touch[i].direction, timertoms(&ms->touch[i].down));
+// 		}
+// 	}
+// }
+// #endif
 
 void mtstate_init(struct MTState* ms)
 {
