@@ -37,7 +37,7 @@
 #include "button-axle.h"
 #include "mprops.h"
 #include "itrack-main.h"
-
+#include "itrack-config.h"
 # define LOG_DEBUG_DRIVER LOG_NULL
 
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
@@ -127,12 +127,11 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 
 	mconfig_update_caps(&itrack->props.cfg, &itrack->props.caps);
 	mprops_init(&itrack->props.cfg, local);
-
 	XIRegisterPropertyHandler(dev, mprops_set_property, NULL, NULL);
 
-	// itrack->timer = NULL; /* allocated later */
-	// itrack->timer_kind = 0;
-	// itrack->props.is_absolute_mode = FALSE;
+	ITrackConfig config;
+	itrack_config_init(&config,dev,local->options);
+
 	return Success;
 }
 
@@ -153,10 +152,6 @@ static int device_on(LocalDevicePtr local)
 	 *  When a SIGIO occurs, our read_input will get called.
 	 */
 	xf86AddEnabledDevice(local);
-	// if(itrack->timer != NULL)
-	// 	TimerFree(itrack->timer);	// release any existing timer
-	// itrack->timer = NULL;
-	// itrack->timer_kind = 0;
 	return Success;
 }
 
@@ -167,14 +162,11 @@ static int device_off(LocalDevicePtr local)
 	if (itrack_close(itrack))
 		LOG_WARNING("cannot ungrab device\n");
 	xf86CloseSerial(local->fd);
-	// if(itrack->timer != NULL)
-	// 	TimerFree(itrack->timer);	// release any existing timer
-	// itrack->timer = NULL;
-	// itrack->timer_kind = 0;
 	return Success;
 }
 
 static int device_close(LocalDevicePtr local){
+	itrack_config_deinit(local->dev);
 	return Success;
 }
 

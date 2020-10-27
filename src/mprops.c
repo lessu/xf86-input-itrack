@@ -107,8 +107,10 @@ void mprops_init(struct MConfig* cfg, InputInfoPtr local) {
 	ivals[0] = cfg->trackpad_disable;
 	mprops.trackpad_disable = atom_init_integer(local->dev, ITRACK_PROP_TRACKPAD_DISABLE, 1, ivals, 8);
 
-	ivals[0] = cfg->touch_down;
-	ivals[1] = cfg->touch_up;
+	// ivals[0] = cfg->touch_down;
+	// ivals[1] = cfg->touch_up;
+	// mprops = atom_init_integer(local->dev, ITRACK_PROP_THUMB_DETECT, 2, ivals, 8);
+	
 	ivals[0] = cfg->ignore_thumb;
 	ivals[1] = cfg->disable_on_thumb;
 	mprops.thumb_detect = atom_init_integer(local->dev, ITRACK_PROP_THUMB_DETECT, 2, ivals, 8);
@@ -134,6 +136,7 @@ void mprops_init(struct MConfig* cfg, InputInfoPtr local) {
 	ivals[1] = cfg->axis_y_invert;
 	mprops.axis_invert = atom_init_integer(local->dev, ITRACK_PROP_AXIS_INVERT, 2, ivals, 8);
 }
+
 int mprops_set_property(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop, BOOL checkonly) {
 	InputInfoPtr local = dev->public.devicePrivate;
 	struct MConfig* cfg = &((itrack_t*)local->private)->props.cfg;

@@ -49,7 +49,9 @@ dist-hook: ChangeLog
 # -avoid-version prevents gratuitous .0.0.0 version numbers on the end
 # _ladir passes a dummy rpath to libtool so the thing will actually link
 # TODO: -nostdlib/-Bstatic/-lgcc platform magic, not installing the .a, etc.
+
 AM_CFLAGS = $(XORG_CFLAGS) 
+
 CFLAGS = -g -std=gnu99 -Wno-declaration-after-statement -I$(top_srcdir)/include/ -I$(top_srcdir)/src -I$(top_srcdir)/src/guesture
 
 noinst_LTLIBRARIES = libguesture.la
@@ -82,7 +84,9 @@ libguesture_la_SOURCES  = src/guesture/guesture.c \
                                src/guesture/guesture_manager.c \
                                src/debug.c \
                                src/touch-handler.c \
-                               src/post-stage.c
+                               src/post-stage.c \
+                               src/xconfig.c \
+                               src/itrack-config.c
 
 debug_main_PROGRAMS = debug_main
 debug_main_CFLAGS=$(AM_CFLAGS) -D__OFFLINE__

@@ -163,7 +163,8 @@ am_@DRIVER_NAME@_drv_la_OBJECTS = src/@DRIVER_NAME@.lo \
 	src/button-axle.lo src/capabilities.lo src/itrack-main.lo \
 	src/mconfig.lo src/mprops.lo src/mtstate.lo src/hwstate.lo \
 	src/common.lo src/guesture/guesture_manager.lo src/debug.lo \
-	src/touch-handler.lo src/post-stage.lo
+	src/touch-handler.lo src/post-stage.lo src/xconfig.lo \
+	src/itrack-config.lo
 @DRIVER_NAME@_drv_la_OBJECTS = $(am_@DRIVER_NAME@_drv_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -215,9 +216,10 @@ am__depfiles_remade = src/$(DEPDIR)/@DRIVER_NAME@.Plo \
 	src/$(DEPDIR)/button-axle.Plo src/$(DEPDIR)/capabilities.Plo \
 	src/$(DEPDIR)/common.Plo src/$(DEPDIR)/debug.Plo \
 	src/$(DEPDIR)/debug_main-common.Po src/$(DEPDIR)/hwstate.Plo \
-	src/$(DEPDIR)/itrack-main.Plo src/$(DEPDIR)/mconfig.Plo \
-	src/$(DEPDIR)/mprops.Plo src/$(DEPDIR)/mtstate.Plo \
-	src/$(DEPDIR)/post-stage.Plo src/$(DEPDIR)/touch-handler.Plo \
+	src/$(DEPDIR)/itrack-config.Plo src/$(DEPDIR)/itrack-main.Plo \
+	src/$(DEPDIR)/mconfig.Plo src/$(DEPDIR)/mprops.Plo \
+	src/$(DEPDIR)/mtstate.Plo src/$(DEPDIR)/post-stage.Plo \
+	src/$(DEPDIR)/touch-handler.Plo src/$(DEPDIR)/xconfig.Plo \
 	src/guesture/$(DEPDIR)/debug_main-guesture_manager.Po \
 	src/guesture/$(DEPDIR)/guesture_manager.Plo \
 	src/guesture/$(DEPDIR)/libguesture_la-drag.Plo \
@@ -530,7 +532,9 @@ libguesture_la_SOURCES = src/guesture/guesture.c \
                                src/guesture/guesture_manager.c \
                                src/debug.c \
                                src/touch-handler.c \
-                               src/post-stage.c
+                               src/post-stage.c \
+                               src/xconfig.c \
+                               src/itrack-config.c
 
 debug_main_CFLAGS = $(AM_CFLAGS) -D__OFFLINE__
 debug_maindir = @inputdir@
@@ -720,6 +724,9 @@ src/debug.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/touch-handler.lo: src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 src/post-stage.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/xconfig.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/itrack-config.lo: src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
 
 @DRIVER_NAME@_drv.la: $(@DRIVER_NAME@_drv_la_OBJECTS) $(@DRIVER_NAME@_drv_la_DEPENDENCIES) $(EXTRA_@DRIVER_NAME@_drv_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(@DRIVER_NAME@_drv_la_LINK) -rpath $(@DRIVER_NAME@_drv_ladir) $(@DRIVER_NAME@_drv_la_OBJECTS) $(@DRIVER_NAME@_drv_la_LIBADD) $(LIBS)
@@ -780,12 +787,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/debug.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/debug_main-common.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/hwstate.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/itrack-config.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/itrack-main.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/mconfig.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/mprops.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/mtstate.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/post-stage.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/touch-handler.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/xconfig.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/guesture/$(DEPDIR)/debug_main-guesture_manager.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/guesture/$(DEPDIR)/guesture_manager.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/guesture/$(DEPDIR)/libguesture_la-drag.Plo@am__quote@ # am--include-marker
@@ -1352,12 +1361,14 @@ distclean: distclean-recursive
 	-rm -f src/$(DEPDIR)/debug.Plo
 	-rm -f src/$(DEPDIR)/debug_main-common.Po
 	-rm -f src/$(DEPDIR)/hwstate.Plo
+	-rm -f src/$(DEPDIR)/itrack-config.Plo
 	-rm -f src/$(DEPDIR)/itrack-main.Plo
 	-rm -f src/$(DEPDIR)/mconfig.Plo
 	-rm -f src/$(DEPDIR)/mprops.Plo
 	-rm -f src/$(DEPDIR)/mtstate.Plo
 	-rm -f src/$(DEPDIR)/post-stage.Plo
 	-rm -f src/$(DEPDIR)/touch-handler.Plo
+	-rm -f src/$(DEPDIR)/xconfig.Plo
 	-rm -f src/guesture/$(DEPDIR)/debug_main-guesture_manager.Po
 	-rm -f src/guesture/$(DEPDIR)/guesture_manager.Plo
 	-rm -f src/guesture/$(DEPDIR)/libguesture_la-drag.Plo
@@ -1425,12 +1436,14 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f src/$(DEPDIR)/debug.Plo
 	-rm -f src/$(DEPDIR)/debug_main-common.Po
 	-rm -f src/$(DEPDIR)/hwstate.Plo
+	-rm -f src/$(DEPDIR)/itrack-config.Plo
 	-rm -f src/$(DEPDIR)/itrack-main.Plo
 	-rm -f src/$(DEPDIR)/mconfig.Plo
 	-rm -f src/$(DEPDIR)/mprops.Plo
 	-rm -f src/$(DEPDIR)/mtstate.Plo
 	-rm -f src/$(DEPDIR)/post-stage.Plo
 	-rm -f src/$(DEPDIR)/touch-handler.Plo
+	-rm -f src/$(DEPDIR)/xconfig.Plo
 	-rm -f src/guesture/$(DEPDIR)/debug_main-guesture_manager.Po
 	-rm -f src/guesture/$(DEPDIR)/guesture_manager.Plo
 	-rm -f src/guesture/$(DEPDIR)/libguesture_la-drag.Plo
