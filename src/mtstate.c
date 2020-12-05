@@ -208,14 +208,17 @@ static int touch_append(struct MTState* ms,
 		timercp(&ms->touch[n].last_update_time,&hs->evtime);
 		// ms->touch[n].direction = TR_NONE;
 		ms->touch[n].tracking_id = fs->tracking_id;
+		ms->touch[n].distance    = fs->distance;
 		ms->touch[n].x = x;
 		ms->touch[n].y = y;
 		ms->touch[n].dx = 0;
 		ms->touch[n].dy = 0;
 		ms->touch[n].total_dx = 0;
 		ms->touch[n].total_dy = 0;
-		ms->touch[n].size_touch = fs->touch_minor;
-		ms->touch[n].size_ap = fs->touch_major;
+		ms->touch[n].touch_major = fs->touch_major;
+		ms->touch[n].touch_minor = fs->touch_minor;
+		ms->touch[n].ap_major = fs->width_major;
+		ms->touch[n].ap_minor = fs->width_minor;
 		SETBIT(ms->touch[n].flags, MT_NEW);
 		SETBIT(ms->touch_used, n);
 	}
@@ -249,8 +252,10 @@ static void touch_update(struct MTState* ms,
 	// if (ms->touch[touch].dx != 0 || ms->touch[touch].dy != 0) {
 	// 	ms->touch[touch].direction = trig_direction(ms->touch[touch].dx, ms->touch[touch].dy);
 	// }
-	ms->touch[touch].size_touch = fs->touch_minor;
-	ms->touch[touch].size_ap    = fs->touch_major;
+	ms->touch[touch].touch_major = fs->touch_major;
+	ms->touch[touch].touch_minor = fs->touch_minor;
+	ms->touch[touch].ap_major    = fs->width_major;
+	ms->touch[touch].ap_minor    = fs->width_minor;
 	CLEARBIT(ms->touch[touch].flags, MT_NEW);
 }
 
@@ -298,7 +303,7 @@ static void touches_update(struct MTState* ms,
 			else
 				touch_update(ms, cfg, caps, hs, &hs->data[i], n);
 		}
-		else if (is_touch(cfg, &hs->data[i]))
+		else if (is_touch(cfg, &hs->data[i]) && !is_thumb(cfg, &hs->data[i]))
 			n = touch_append(ms, cfg, caps, hs, i);
 
 		if (n >= 0) {

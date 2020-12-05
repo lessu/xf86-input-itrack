@@ -84,6 +84,10 @@ static int read_event(struct HWState *s, const struct Capabilities *caps,
 			if (ev->value >= 0 && ev->value < DIM_FINGER)
 				s->slot = ev->value;
 			break;
+		case ABS_MT_DISTANCE:
+			s->data[s->slot].distance = ev->value;
+			break;
+		break;
 		case ABS_MT_TOUCH_MAJOR:
 			s->data[s->slot].touch_major = ev->value;
 			break;

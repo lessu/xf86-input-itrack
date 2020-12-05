@@ -31,17 +31,29 @@ static void log_touch(const struct Touch *touch){
         extra_string = "";
     }
 
-    LOG_DEBUG_CONT("([%ld.%03ld] id=%d , %s %s%s , size=(%d,%d) , loc=(%d,%d) , delta=(%d,%d) ),sun_delta=(%d,%d) create_time=[%ld,%03ld]\n",
+    // LOG_DEBUG_CONT("([%ld.%03ld] id=%d , %s %s%s , size=(%d,%d) , loc=(%d,%d) , delta=(%d,%d) ),sun_delta=(%d,%d) create_time=[%ld,%03ld]\n",
+    //     touch->update_time.tv_sec,touch->update_time.tv_usec,
+    //     touch->tracking_id,
+    //     status_string,
+    //     type_string,
+    //     extra_string,
+    //     touch->size_touch,touch->size_ap,
+    //     touch->x,touch->x,
+    //     touch->dx,touch->dy,
+    //     touch->total_dx,touch->total_dy,
+    //     touch->create_time.tv_sec,touch->create_time.tv_usec
+    // );
+
+    LOG_DEBUG_CONT("([%ld.%03ld] id=%d , %s %s%s , size=([%d,%d],ap=[%d,%d]), distance=(%d), loc=(%d,%d) , delta=(%d,%d) )\n",
         touch->update_time.tv_sec,touch->update_time.tv_usec,
         touch->tracking_id,
         status_string,
         type_string,
         extra_string,
-        touch->size_touch,touch->size_ap,
+        touch->touch_major,touch->touch_minor,touch->ap_major,touch->ap_minor,
+        touch->distance,
         touch->x,touch->x,
-        touch->dx,touch->dy,
-        touch->total_dx,touch->total_dy,
-        touch->create_time.tv_sec,touch->create_time.tv_usec
+        touch->dx,touch->dy
     );
 }
 

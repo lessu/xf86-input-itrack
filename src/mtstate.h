@@ -42,10 +42,12 @@ struct Touch {
 	int tracking_id;
 	int x, y, dx, dy;
 	int total_dx, total_dy;
+	int distance;
 	struct timeval create_time;
 	struct timeval update_time;
 	struct timeval last_update_time;
-	int size_touch,size_ap;
+	int touch_major,touch_minor;
+	int ap_major,ap_minor;
 };
 
 struct MTState {

@@ -36,6 +36,7 @@
 	for (i = firstbit(m); i >= 0; i = firstbit((m) & (~0U << (i + 1))))
 
 struct FingerState {
+	int distance;
 	/* The size of the contact area */
 	int touch_major, touch_minor;
 	/* The size of the approaching tool */

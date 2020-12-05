@@ -4,15 +4,20 @@
 #include <assert.h>
 
 static void on_start(void *user_data,const struct Touch *touches,int touch_bit){
-    GUESTURE_DEBUG("[tap]on_start\n");
+    TAP_GUESTURE_DEBUG("[tap]on_start\n");
+    // struct tap_guesture_s *guesture = user_data;
+    // guesture->update_event_count = 0;
 }
 
 static void on_update(void *user_data,const struct Touch *touches,int touch_bit){
-    GUESTURE_DEBUG("[tap]on_update\n");
+    TAP_GUESTURE_DEBUG("[tap]on_update\n");
     struct tap_guesture_s *guesture = user_data;
 
+    // guesture->update_event_count ++;
+
+    bool is_thumb = false;
     int count = 0;
-    
+    int max_move_dist = 0;
     guesture->sum_x = 0;
     guesture->sum_y = 0;
     const struct Touch *ptouch;
@@ -21,6 +26,15 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
         guesture->sum_x += ptouch->total_dx;
         guesture->sum_y += ptouch->total_dy;
         count++;
+        if(abs(ptouch->dx) > max_move_dist){
+            max_move_dist = abs(ptouch->dx);
+        }
+        if(abs(ptouch->dy) > max_move_dist){
+            max_move_dist = abs(ptouch->dy);
+        }
+        if(ptouch->flags & (1<<MT_THUMB)){
+            is_thumb = true;
+        }
     }
 
     guesture->sum_x /= count;
@@ -29,12 +43,20 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
     /** should have within a certain amount of time */
     int64_t diff_ms = time_diff_ms(&ptouch->update_time,&ptouch->create_time);
     uint64_t dist2 = math_dist2(guesture->sum_x,guesture->sum_y);
-    if( diff_ms > TAP_TIME_MAX_HOLD_TIME){
-        GUESTURE_DEBUG("[tap] diff_ms > TAP_TIME_MAX_HOLD_TIME\n");
+    if(is_thumb){
+        TAP_GUESTURE_DEBUG("ignore thumb\n");
        // not a tap
         guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO);
-    }else if( dist2 > TAP_MOVE_DIST2){
-        GUESTURE_DEBUG("[tap] dist2 > TAP_MOVE_DIST2\n");
+    }else if( diff_ms > TAP_TIME_MAX_HOLD_TIME){
+        TAP_GUESTURE_DEBUG("[tap] diff_ms > TAP_TIME_MAX_HOLD_TIME\n");
+       // not a tap
+        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO);
+    }else if( max_move_dist > TAP_MOVE_UPDATE_DIST){
+        TAP_GUESTURE_DEBUG("[tap] max_move_dist > TAP_MOVE_UPDATE_DIST\n");
+        // not a tap
+        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO);
+    }else if( dist2 > TAP_MOVE_TOTAL_DIST2){
+        TAP_GUESTURE_DEBUG("[tap] dist2 > TAP_MOVE_TOTAL_DIST2\n");
         // not a tap
         guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO);
     }
@@ -42,31 +64,34 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
 }
 
 static bool on_end(void *user_data,bool is_cancel,int touch_count){
-    GUESTURE_DEBUG("[tap]on_end\n");
+    TAP_GUESTURE_DEBUG("[tap]on_end\n");
     struct tap_guesture_s *guesture = user_data;
     struct timeval time;
  	gettimeofday(&time, NULL);
-    
-    GUESTURE_DEBUG("TAP %d Recognized\n",guesture->guesture.props.required_touches);
-    guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK);
-    int tap_button = -1;
-    
-    if( guesture->guesture.props.required_touches == 1 ){
-        tap_button = TAP_1_BUTTON;
-    }else if( guesture->guesture.props.required_touches == 2 ){
-        tap_button = TAP_2_BUTTON;
-    }else if( guesture->guesture.props.required_touches == 3 ){
-        tap_button = TAP_3_BUTTON;
-    }else if( guesture->guesture.props.required_touches == 4 ){
-        tap_button = TAP_4_BUTTON;
-    }else{
-        tap_button = -1;
-    }
+    // if(guesture->update_event_count > 0){
+        TAP_GUESTURE_DEBUG("TAP %d Recognized\n",guesture->guesture.props.required_touches);
+        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK);
+        int tap_button = -1;
+        
+        if( guesture->guesture.props.required_touches == 1 ){
+            tap_button = TAP_1_BUTTON;
+        }else if( guesture->guesture.props.required_touches == 2 ){
+            tap_button = TAP_2_BUTTON;
+        }else if( guesture->guesture.props.required_touches == 3 ){
+            tap_button = TAP_3_BUTTON;
+        }else if( guesture->guesture.props.required_touches == 4 ){
+            tap_button = TAP_4_BUTTON;
+        }else{
+            tap_button = -1;
+        }
 
-    if( tap_button >= 0 ){
-        /** it's a tap */
-        guesture_post_button_down_and_up(&guesture->guesture,tap_button,TAP_UP_TIME);
-    }
+        if( tap_button >= 0 ){
+            /** it's a tap */
+            guesture_post_button_down_and_up(&guesture->guesture,tap_button,TAP_UP_TIME);
+        }
+    // }else{
+        // guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO);
+    // }
     return TRUE;
 }
 

@@ -5,9 +5,9 @@
 #define NATURE_SCROLL 1
 #define MAX_BUTTON_NUMBER 32
 #define SCROLL_INERTIA_SPEED_TRIGER 1000
-#define SCROLL_FRICTION             30000 /** decent 50000 speed persecond*/
+#define SCROLL_FRICTION             50000 /** decent 50000 speed persecond*/
 #define SCROLL_INERTIA_POST_RATE    (60) /** post 60 event per second*/
-#define STEP_DISTANCE_NEEDS 200
+#define STEP_DISTANCE_NEEDS 400
 
 struct post_stage_s;
 typedef void (*ITrackInertiaScrollStateChangeFn)( const struct post_stage_s *handler , bool is_on,void *userdata);

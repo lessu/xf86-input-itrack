@@ -4,13 +4,14 @@
 #include "touch-handler.h"
 
 static bool is_touch_needs_to_ignore(const struct Touch *touch){
-	if( GETBIT(touch->flags, MT_THUMB) || GETBIT(touch->flags, MT_PALM)
-		//  ||  GETBIT(touch->flags, MT_EDGE) 
-	){
-		return TRUE;
-	}else{
-		return FALSE;
-	}
+	return false;
+	// if( GETBIT(touch->flags, MT_THUMB) || GETBIT(touch->flags, MT_PALM)
+	// 	//  ||  GETBIT(touch->flags, MT_EDGE) 
+	// ){
+	// 	return TRUE;
+	// }else{
+	// 	return FALSE;
+	// }
 }
 
 static void on_post_stage_inertia_scroll_state_change(const struct post_stage_s *handler,bool state,void* userdata){
