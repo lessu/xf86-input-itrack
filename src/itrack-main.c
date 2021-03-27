@@ -53,9 +53,10 @@ bool itrack_read(itrack_t *itrack){
     int ret = hwstate_modify(&itrack->hs, &itrack->dev, itrack->fd, &itrack->props.caps);
 	if (ret <= 0)
 		return 0;
+
+	log_touches(itrack,itrack->status.state.touch ,itrack->status.state.touch_used);
+
 	mtstate_extract(&itrack->status.state, &itrack->props.cfg, &itrack->hs, &itrack->props.caps);
-	
-	log_touches(itrack->status.state.touch ,itrack->status.state.touch_used);
 
 	// physical button
 	// static int last_button = 0;

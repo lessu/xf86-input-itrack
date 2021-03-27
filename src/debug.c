@@ -1,7 +1,33 @@
 #include "debug.h"
 #include "common.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <pthread.h>
 
 #define DEBUG_LOGGING_ON 0
+
+#define DEBUG_FIFO_PATH "/tmp/itrack_debug_fifo"
+
+#define TOUCHES_BUFF_SIZE \
+    (sizeof(struct Touch) * MAX_TOUCH_COUNT)    
+
+struct {
+    bool      enabled;
+    int       fd;
+    pthread_t thread;
+    pthread_cond_t  cond;
+    pthread_mutex_t mutex;
+
+    uint8_t         buff[TOUCHES_BUFF_SIZE + sizeof(int) + sizeof(int)];
+
+    bool            is_waiting;
+    bool            is_writing;
+    bool            discontinue;
+} s_debug_pipe;
 
 #if DEBUG_LOGGING_ON
 static void log_touch(const struct Touch *touch){
@@ -59,7 +85,7 @@ static void log_touch(const struct Touch *touch){
 
 void log_touches(const struct Touch *touches,int mask){
     LOG_DEBUG("touches = [");
-    for(int i = 0; i < 32 ;i ++ ){
+    for(int i = 0; i < MAX_TOUCH_COUNT ;i ++ ){
         if( GETBIT(mask,i) ){
             log_touch(touches + i);
         }
@@ -68,6 +94,141 @@ void log_touches(const struct Touch *touches,int mask){
 }
 #else
 
-void log_touches(const struct Touch *touches,int mask){ }
+
+
+void log_touches(const itrack_t *itrack,const struct Touch *touches,int mask)
+{
+    if( !s_debug_pipe.enabled ) {
+        return ;
+    }
+    int state = 0;
+    if(s_debug_pipe.is_waiting){
+        if(s_debug_pipe.discontinue == true){
+            state = 0x1;
+        }
+
+        uint8_t *buff = s_debug_pipe.buff;
+        memcpy(buff,&state,sizeof(int));
+        buff += sizeof(int);
+        memcpy(buff,&mask,sizeof(int));
+        buff += sizeof(int);
+        memcpy(buff,touches,TOUCHES_BUFF_SIZE);
+
+        pthread_cond_signal(&s_debug_pipe.cond);
+
+    }else{
+        /**
+         *  
+         * when is writing, 
+         * this log is to lost
+         * 
+         */
+        s_debug_pipe.discontinue = true;
+    }
+}
 
 #endif
+
+static void debug_fifo_thread_main(void *user_data){
+    while(1){
+        s_debug_pipe.is_waiting  = true;
+        pthread_cond_wait(&s_debug_pipe.cond,&s_debug_pipe.mutex);
+        s_debug_pipe.is_waiting  = false;
+
+        if(s_debug_pipe.fd < 0){
+            /** try open */
+            s_debug_pipe.fd = open(DEBUG_FIFO_PATH,O_WRONLY,0666);
+        }
+
+        if(s_debug_pipe.fd < 0){
+            /** 
+             * When other side is not ready for reading
+             * Just retry next time
+             */
+            continue;
+        }
+        
+        s_debug_pipe.is_writing  = true;
+        int wrote_size = write(
+            s_debug_pipe.fd,
+            s_debug_pipe.buff,
+            sizeof(s_debug_pipe.buff)
+        );
+        s_debug_pipe.is_writing  = false;
+
+        if ( wrote_size < 0 ) {
+            switch (errno)
+            {
+            case EPIPE:
+                /** reader closed */
+                LOG_INFO("debug fifo EPIPE received\n");
+                close(s_debug_pipe.fd);
+                break;
+            case EINTR:
+                /** intr signal received */
+                /** 
+                 * this should not happen
+                 */ 
+                break;
+            default:
+                /** unknown reason */
+                close(s_debug_pipe.fd);
+                break;
+            }
+            s_debug_pipe.fd = -1;
+        }else if( wrote_size == sizeof(s_debug_pipe.buff) ){
+            /** normal */
+        }else{
+            /** buff full */
+            /** this should not happen */
+            /** stop thread */
+            LOG_DEBUG("debug buff write uncomplete.\n");
+            return ;
+        }
+    }
+}
+
+static int debug_fifo_create( void )
+{
+    int ret = 0;
+    struct stat st;
+    if ( stat( DEBUG_FIFO_PATH, &st ) != 0 ) {
+        // not exist;
+        int mk_ret = mkfifo( DEBUG_FIFO_PATH, 0666 );
+        if ( mk_ret != 0 ) {
+            LOG_DEBUG("Create debug fifo %s failed,errno=%s(%d)\n",DEBUG_FIFO_PATH,strerror(errno),errno);
+            ret = -1;
+        }else{
+            LOG_DEBUG("Create debug fifo %s success\n",DEBUG_FIFO_PATH);
+            ret = 0;
+        }
+    } else {
+        if ( S_ISFIFO( st.st_mode ) ){
+            // already exist
+            LOG_DEBUG("Debug fifo %s already exist\n",DEBUG_FIFO_PATH);
+            ret = 0;
+        } else {
+            // already exist a no fifo file
+            LOG_DEBUG("Create debug fifo %s failed,file exist but not a fifo\n",DEBUG_FIFO_PATH);
+            ret = -2;
+        }
+    }
+    return ret;
+}
+
+void debug_fifo_enable( void ){
+    if( s_debug_pipe.enabled ){
+        return ;
+    }
+
+    if( debug_fifo_create() == 0){
+        s_debug_pipe.enabled = true;
+        s_debug_pipe.is_waiting = false;
+        s_debug_pipe.is_writing = false;
+        s_debug_pipe.fd = -1;
+        pthread_cond_init(&s_debug_pipe.cond,NULL);
+        pthread_mutex_init(&s_debug_pipe.mutex,NULL);
+        pthread_create(&s_debug_pipe.thread,0,(void (*)(void *))debug_fifo_thread_main,NULL);
+    }
+
+}

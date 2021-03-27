@@ -38,6 +38,7 @@
 #include "mprops.h"
 #include "itrack-main.h"
 #include "itrack-config.h"
+#include "debug.h"
 # define LOG_DEBUG_DRIVER LOG_NULL
 
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
@@ -131,6 +132,10 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 
 	ITrackConfig config;
 	itrack_config_init(&config,dev,local->options);
+
+#ifdef DEBUG_FIFO
+	debug_fifo_enable();
+#endif 
 
 	return Success;
 }

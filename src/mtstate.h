@@ -26,29 +26,7 @@
 #include "mconfig.h"
 #include "hwstate.h"
 #include "capabilities.h"
-
-#define MT_NEW 0
-#define MT_RELEASED 1
-#define MT_INVALID 2
-#define MT_THUMB 3
-#define MT_PALM 4
-#define MT_EDGE 5
-#define MT_TAP 6
-#define MT_BUTTON 7
-
-struct Touch {
-	bitmask_t flags;
-	// double direction;
-	int tracking_id;
-	int x, y, dx, dy;
-	int total_dx, total_dy;
-	int distance;
-	struct timeval create_time;
-	struct timeval update_time;
-	struct timeval last_update_time;
-	int touch_major,touch_minor;
-	int ap_major,ap_minor;
-};
+#include "public/touch.h"
 
 struct MTState {
 	bitmask_t touch_used;
@@ -75,10 +53,5 @@ void mtstate_extract(struct MTState* ms,
 			const struct HWState* hs,
 			const struct Capabilities* caps);
 
-// void mtstate_get_touches(const struct MTState* ms,
-// 	struct Touch * __output touches,
-// 	uint32_t max_touch,
-// 	uint32_t * __output touch_count
-// );
 #endif
 

@@ -7,7 +7,7 @@
                 "/usr/include/xorg",
                 "/usr/include/pixman-1/"
             ],
-            "defines": ["__USE_GNU"],
+            "defines": ["__USE_GNU","DEBUG_FIFO=1"],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "gnu++14",
