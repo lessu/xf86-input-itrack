@@ -7,7 +7,6 @@
 **/*.o
 tags
 
-aclocal.m4
 compile
 config.h
 **/*.log
@@ -20,7 +19,6 @@ itrack_drv.la
 libtool
 ltmain.sh
 missing
-xf86-itrack.pc
 output.*
 itrack.m4
 itrack.4
@@ -29,7 +27,9 @@ traces.*
 requests
 Makefile
 stamp-h1
-
+*.m4
+Makefile.in
+config.h.in
 
 debug_main
 libguesture.la

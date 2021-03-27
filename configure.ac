@@ -21,36 +21,35 @@
 #
 # Process this file with autoconf to produce a configure script
 
-AC_PREREQ(2.57)
-AC_INIT([xf86-itrack],
-        0.0.1,
-        [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
-        xf86-itrack)
+AC_PREREQ([2.71])
+AC_INIT([xf86-itrack],[0.0.1],[https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],[xf86-itrack])
 
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([Makefile.am])
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR(.)
-AM_INIT_AUTOMAKE([dist-bzip2 subdir-objects])
 
+# Initialize Automake
+AM_INIT_AUTOMAKE([foreign subdir-objects])
 AM_MAINTAINER_MODE
 
-# Require xorg-macros: XORG_DEFAULT_OPTIONS
-m4_ifndef([XORG_MACROS_VERSION], [AC_FATAL([must install xorg-macros 1.3 or later before running autoconf/autogen])])
-XORG_MACROS_VERSION(1.3)
-AM_CONFIG_HEADER([config.h])
-
-# Checks for programs.
+# Initialize libtool
 AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
-AC_PROG_CC
+LT_INIT
+
+# Initialize X.Org macros 1.8 or later for MAN_SUBSTS set by XORG_MANPAGE_SECTIONS
+m4_ifndef([XORG_MACROS_VERSION],
+          [m4_fatal([must install xorg-macros 1.8 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.8)
 XORG_DEFAULT_OPTIONS
 
-AH_TOP([#include "xorg-server.h"])
 
-AC_ARG_WITH(xorg-module-dir,
-            AC_HELP_STRING([--with-xorg-module-dir=DIR],
-                           [Default xorg module directory [[default=$libdir/xorg/modules]]]),
-            [moduledir="$withval"],
-            [moduledir="$libdir/xorg/modules"])
+AH_TOP([#include "xorg-server.h"])
+# configure option for module install directory
+AC_ARG_WITH(xorg-module-dir, AS_HELP_STRING([--with-xorg-module-dir=DIR],[Default xorg module directory [[default=$libdir/xorg/modules]]]),
+	[moduledir="$withval"],
+	[moduledir="$libdir/xorg/modules"])
+
 inputdir=${moduledir}/input
 AC_SUBST(inputdir)
 
@@ -67,11 +66,26 @@ AC_SUBST([sdkdir])
 # Checks for libraries.
 
 # Checks for header files.
-AC_HEADER_STDC
+m4_warn([obsolete],
+[The preprocessor macro `STDC_HEADERS' is obsolete.
+  Except in unusual embedded environments, you can safely include all
+  ISO C90 headers unconditionally.])dnl
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 
 DRIVER_NAME=itrack
 AC_SUBST([DRIVER_NAME])
 
-AC_OUTPUT([Makefile
-           man/Makefile
-           xf86-itrack.pc])
+#AC_CONFIG_FILES([Makefile
+#           man/Makefile
+#           xf86-itrack.pc])
+AC_OUTPUT
+
+# Everything else
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

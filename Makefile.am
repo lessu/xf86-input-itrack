@@ -50,9 +50,7 @@ dist-hook: ChangeLog
 # _ladir passes a dummy rpath to libtool so the thing will actually link
 # TODO: -nostdlib/-Bstatic/-lgcc platform magic, not installing the .a, etc.
 
-AM_CFLAGS = $(XORG_CFLAGS) 
-
-CFLAGS = -g -std=gnu99 -Wno-declaration-after-statement -I$(top_srcdir)/include/ -I$(top_srcdir)/src -I$(top_srcdir)/src/guesture
+AM_CFLAGS = $(XORG_CFLAGS)  -g -std=gnu99 -Wno-declaration-after-statement -I$(top_srcdir)/include/ -I$(top_srcdir)/src -I$(top_srcdir)/src/guesture
 
 noinst_LTLIBRARIES = libguesture.la
 libguesture_la_CFLAGS=$(AM_CFLAGS) -D__DEBUG__
@@ -67,10 +65,8 @@ libguesture_la_SOURCES  = src/guesture/guesture.c \
 @DRIVER_NAME@_drv_la_LTLIBRARIES = @DRIVER_NAME@_drv.la
 @DRIVER_NAME@_drv_la_LDFLAGS = -module -avoid-version
 @DRIVER_NAME@_drv_ladir = @inputdir@
-
-#AM_CPPFLAGS=
-
-@DRIVER_NAME@_drv_la_LIBADD    = libguesture.la
+@DRIVER_NAME@_drv_la_CFLAGS  = $(AM_CFLAGS) -DDEBUG_FIFO=1
+@DRIVER_NAME@_drv_la_LIBADD  = libguesture.la
 @DRIVER_NAME@_drv_la_SOURCES = src/@DRIVER_NAME@.c \
                                src/@DRIVER_NAME@.h \
                                src/button-axle.c \

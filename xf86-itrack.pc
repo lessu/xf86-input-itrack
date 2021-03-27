@@ -1,6 +1,6 @@
-sdkdir=@sdkdir@
+sdkdir=/usr/include/xorg
 
 Name: xorg-evdev
 Description: X.Org random input driver.
-Version: @PACKAGE_VERSION@
+Version: 0.0.1
 Cflags: -I${sdkdir}
