@@ -1,6 +1,6 @@
 #pragma once
 #include "./guesture.h"
-#define TAP_GUESTURE_DEBUG 
+#define TAP_GUESTURE_DEBUG(...) 
 #define TAP_TIME_MAX_HOLD_TIME      150
 #define TAP_UP_TIME  				20
 #define TAP_MOVE_TOTAL_DIST2    		    (100*100)

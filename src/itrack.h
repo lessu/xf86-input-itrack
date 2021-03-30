@@ -67,5 +67,4 @@ typedef struct {
 	 */
 	// OsTimerPtr timer;
 	// int is_absolute_mode;		// Should absolute mode be enabled ? 0 or 1
-	ValuatorMask* valuator_mask;
 } itrack_t;

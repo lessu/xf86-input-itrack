@@ -99,11 +99,11 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 	#error "Unsupported ABI_XINPUT_VERSION"
 #endif
 
-	init_axle_absolute(dev, 0, &axes_labels[0]);
-	init_axle_absolute(dev, 1, &axes_labels[1]);
+	// init_axle_absolute(dev, 0, &axes_labels[0]);
+	// init_axle_absolute(dev, 1, &axes_labels[1]);
 
-	init_axle_relative(dev, 2, &axes_labels[2]);
-	init_axle_relative(dev, 3, &axes_labels[3]);
+	// init_axle_relative(dev, 2, &axes_labels[2]);
+	// init_axle_relative(dev, 3, &axes_labels[3]);
 
 	/* Always set valuator distance to 1.0 because it reported values will be
 	 * adjusted accordingly by smooth scroll trigger.
@@ -306,8 +306,6 @@ static void uninit(InputDriverPtr drv, InputInfoPtr local, int flags)
 {
 	itrack_t *itrack = local->private;
 
-	if (itrack->valuator_mask)
-		valuator_mask_free(&itrack->valuator_mask);
 	free(local->private);
 	local->private = 0;
 	xf86DeleteInput(local, 0);

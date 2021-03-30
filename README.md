@@ -59,7 +59,7 @@ It is likely that you will need to change system-dependent paths such as the xor
 
 # Configure
 The following is a minimal working InputClass section for xorg.conf:
-create a file under `/etc/X11/xorg.conf/20-itrack.conf`
+create a file under `/etc/X11/xorg.conf.d/20-itrack.conf`
 ```
 Section "InputClass"
     MatchIsTouchpad "on"
@@ -83,6 +83,54 @@ I used this way to debug.
 * 4,retry how trackpad move
 * 5,swith to tty1(X11 coding env),goto step 2 until done
 
+## FIFO
+A debug fifo(/tmp/itrack_debug_fifo) is created when set `-DDEBUG_FIFO=1`
 
-# Contact
-ask the issue.
+When touches events happened.Bin data is writen to fifo.
+
+Its format is(64bit):
+```
+0x0000 int   // stat
+0x0008 int   // mask
+0x0010 Touch[16] // struct Touch[16]
+```
+
+It should be read as struct
+```c
+struct {
+    int stat;
+    int mask;
+    struct Touch touches[16];
+};
+```
+which struct Touch is
+```c
+
+struct Touch {
+	bitmask_t flags;
+	int tracking_id;
+	int x, y, dx, dy;
+	int total_dx, total_dy;
+	int distance;
+	struct timeval create_time;
+	struct timeval update_time;
+	struct timeval last_update_time;
+	int touch_major,touch_minor;
+	int ap_major,ap_minor;
+};
+
+```
+Flasgs is
+
+```c
+
+#define MT_NEW 0
+#define MT_RELEASED 1
+#define MT_INVALID 2
+#define MT_THUMB 3
+#define MT_PALM 4
+#define MT_EDGE 5
+#define MT_TAP 6
+#define MT_BUTTON 7
+
+```
