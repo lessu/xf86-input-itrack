@@ -1,8 +1,6 @@
 #pragma once
 #include <sys/time.h>
 #include <stdint.h>
-// #include <stdbool.h>
-// #include <X11/Xdefs.h>
 struct itrack_action_s{
     struct{
         /** button down */

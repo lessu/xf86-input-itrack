@@ -23,7 +23,6 @@
 #define CAPABILITIES_H
 
 #include <mtdev-mapping.h>
-#include "button-axle.h"
 
 struct Capabilities {
 	struct input_id devid;

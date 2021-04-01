@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include <xorg/xf86.h>
 #include <stdbool.h>
 #include "itrack-type.h"
 #define NATURE_SCROLL 1

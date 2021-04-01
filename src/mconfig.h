@@ -233,7 +233,7 @@ void mconfig_update_caps(struct MConfig* cfg,
 			const struct Capabilities* caps);
 
 void mconfig_init_with_configure(struct MConfig* cfg,
-			pointer opts);
+			void* opts);
 
 #endif
 

@@ -2,6 +2,8 @@
 #include "itrack.h"
 #include "guesture_manager.h"
 #include "post-stage.h"
+#include "guesture.h"
+
 #define LOG_GM LOG_NULL
 static void apply_on_accept_callback(struct guesture_manager_s *manager,struct guesture_item_s *item);
 

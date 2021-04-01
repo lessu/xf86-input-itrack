@@ -23,7 +23,7 @@ AUTOMAKE_OPTIONS = foreign
 # Ensure headers are installed below $(prefix) for distcheck
 DISTCHECK_CONFIGURE_FLAGS = --with-sdkdir='$${includedir}/xorg'
 
-SUBDIRS = man
+# SUBDIRS = man
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xf86-itrack.pc
@@ -69,7 +69,7 @@ libguesture_la_SOURCES  = src/guesture/guesture.c \
 @DRIVER_NAME@_drv_la_LIBADD  = libguesture.la
 @DRIVER_NAME@_drv_la_SOURCES = src/@DRIVER_NAME@.c \
                                src/@DRIVER_NAME@.h \
-                               src/button-axle.c \
+                               src/itrack_label.c \
                                src/capabilities.c \
                                src/itrack-main.c \
                                src/mconfig.c \
@@ -84,13 +84,13 @@ libguesture_la_SOURCES  = src/guesture/guesture.c \
                                src/xconfig.c \
                                src/itrack-config.c
 
-debug_main_PROGRAMS = debug_main
-debug_main_CFLAGS=$(AM_CFLAGS) -D__OFFLINE__
-debug_maindir       = @inputdir@
-debug_main_LDADD    = libguesture.la
-debug_main_SOURCES  = test/main.c \
-                      test/simu_test.c \
-                      src/common.c \
-                      src/guesture/guesture_manager.c \
-                      test/test_move.c \
-                      test/test_tap.c
+# debug_main_PROGRAMS = debug_main
+# debug_main_CFLAGS=$(AM_CFLAGS) -D__OFFLINE__
+# debug_maindir       = @inputdir@
+# debug_main_LDADD    = libguesture.la
+# debug_main_SOURCES  = test/main.c \
+#                       test/simu_test.c \
+#                       src/common.c \
+#                       src/guesture/guesture_manager.c \
+#                       test/test_move.c \
+#                       test/test_tap.c

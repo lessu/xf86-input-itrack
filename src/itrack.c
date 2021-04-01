@@ -34,12 +34,16 @@
 #include "config.h"
 
 #include "itrack.h"
-#include "button-axle.h"
+#include "itrack_label.h"
 #include "mprops.h"
 #include "itrack-main.h"
 #include "itrack-config.h"
 #include "debug.h"
 # define LOG_DEBUG_DRIVER LOG_NULL
+
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 7
+	#error "Unsupported ABI_XINPUT_VERSION"
+#endif
 
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
 typedef InputInfoPtr LocalDevicePtr;
@@ -60,52 +64,35 @@ typedef InputInfoPtr LocalDevicePtr;
 // }
 
 
-static void pointer_control(DeviceIntPtr dev, PtrCtrl *ctrl)
+static void s_pointer_control(DeviceIntPtr dev, PtrCtrl *ctrl)
 {
-	LOG_DEBUG_DRIVER("pointer_control\n");
+	LOG_DEBUG_DRIVER("s_pointer_control\n");
+}
 }
 
 static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 {
 	itrack_t *itrack = local->private;
 
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 3
-	InitPointerDeviceStruct((DevicePtr)dev,
-				btmap, DIM_BUTTON,
-				GetMotionHistory,
-				pointer_control,
-				GetMotionHistorySize(),
-				2);
-#elif GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 7
-	InitPointerDeviceStruct((DevicePtr)dev,
-				btmap, DIM_BUTTON,
-				pointer_control,
-				GetMotionHistorySize(),
-				2);
-#elif GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
-	unsigned char btmap[DIM_BUTTON + 1] = {
-		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-	};
-	Atom axes_labels[NUM_AXES], btn_labels[DIM_BUTTON];
-	init_axes_labels(axes_labels);
-	init_button_labels(btn_labels);
+	CARD8 btmap[DIM_BUTTON];
+	Atom axes_labels[NUM_AXES];
+	Atom btn_labels[DIM_BUTTON];
+	itrack_label_axes_init(axes_labels);
+	itrack_label_button_init(btn_labels,btmap);
 
-	InitPointerDeviceStruct((DevicePtr)dev,
-				btmap, DIM_BUTTON, btn_labels,
-				pointer_control,
-				GetMotionHistorySize(),
-				NUM_AXES, axes_labels);
-#else
-	#error "Unsupported ABI_XINPUT_VERSION"
-#endif
-
-	// init_axle_absolute(dev, 0, &axes_labels[0]);
-	// init_axle_absolute(dev, 1, &axes_labels[1]);
-
-	// init_axle_relative(dev, 2, &axes_labels[2]);
-	// init_axle_relative(dev, 3, &axes_labels[3]);
-
-	/* Always set valuator distance to 1.0 because it reported values will be
+	if(!InitPointerDeviceStruct(
+			(DevicePtr)dev,
+			btmap, DIM_BUTTON, btn_labels,
+			s_pointer_control,
+			GetMotionHistorySize(),
+			NUM_AXES, axes_labels
+		)
+	){
+		LOG_ERROR("InitPointerDeviceStruct for itrack failed");
+		return BadRequest;
+	}
+	/* 
+	 * Always set valuator distance to 1.0 because it reported values will be
 	 * adjusted accordingly by smooth scroll trigger.
 	 */
 	SetScrollValuator(dev, 2, SCROLL_TYPE_VERTICAL,   1.0, SCROLL_FLAG_PREFERRED);
@@ -130,7 +117,7 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 	mprops_init(&itrack->props.cfg, local);
 	XIRegisterPropertyHandler(dev, mprops_set_property, NULL, NULL);
 
-	ITrackConfig config;
+	struct itrack_config_s config;
 	itrack_config_init(&config,dev,local->options);
 
 #ifdef DEBUG_FIFO
@@ -309,6 +296,7 @@ static void uninit(InputDriverPtr drv, InputInfoPtr local, int flags)
 	free(local->private);
 	local->private = 0;
 	xf86DeleteInput(local, 0);
+	(void)itrack;
 }
 
 /* About xorg drivers, modules:

@@ -44,7 +44,7 @@ XORG_MACROS_VERSION(1.8)
 XORG_DEFAULT_OPTIONS
 
 
-AH_TOP([#include "xorg-server.h"])
+# AH_TOP([#include "xorg-server.h"])
 # configure option for module install directory
 AC_ARG_WITH(xorg-module-dir, AS_HELP_STRING([--with-xorg-module-dir=DIR],[Default xorg module directory [[default=$libdir/xorg/modules]]]),
 	[moduledir="$withval"],
@@ -78,11 +78,6 @@ AC_PROG_EGREP
 
 DRIVER_NAME=itrack
 AC_SUBST([DRIVER_NAME])
-
-#AC_CONFIG_FILES([Makefile
-#           man/Makefile
-#           xf86-itrack.pc])
-AC_OUTPUT
 
 # Everything else
 AC_PROG_CC

@@ -5,7 +5,7 @@
 #include "common.h"
 
 
-void itrack_config_init(ITrackConfig *config,DeviceIntPtr dev,XF86OptionPtr opt){
+void itrack_config_init(struct itrack_config_s *config,DeviceIntPtr dev,XF86OptionPtr opt){
     xconfig_init();
 
 //         "tap_key", "[tap1,tap2,tap3,tap4],Which mouse key will trigger will tap with finger1,2,3,4,5"

@@ -68,13 +68,13 @@ static int read_event(struct HWState *s, const struct Capabilities *caps,
 	case EV_KEY:
 		switch (ev->code) {
 		case BTN_LEFT:
-			MODBIT(s->button, MT_BUTTON_LEFT, ev->value);
+			MODBIT(s->button, IT_BUTTON_LEFT, ev->value);
 			break;
 		case BTN_MIDDLE:
-			MODBIT(s->button, MT_BUTTON_MIDDLE, ev->value);
+			MODBIT(s->button, IT_BUTTON_MIDDLE, ev->value);
 			break;
 		case BTN_RIGHT:
-			MODBIT(s->button, MT_BUTTON_RIGHT, ev->value);
+			MODBIT(s->button, IT_BUTTON_RIGHT, ev->value);
 			break;
 		}
 		break;

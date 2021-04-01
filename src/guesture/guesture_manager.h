@@ -1,5 +1,6 @@
 #pragma once
-#include "guesture.h"
+// #include "guesture.h"
+#include <stdbool.h>
 #define MAX_CALLBACK_COUNT (8)
 #define MAX_GUESTURE_COUNT (32)
 #define GUESTURE_PRE_WAITING_TIME  (150)

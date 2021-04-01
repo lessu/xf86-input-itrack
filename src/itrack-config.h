@@ -30,8 +30,8 @@ struct itrack_config_s{
     
 };
 
-typedef struct itrack_config_s  ITrackConfig;
+// typedef struct itrack_config_s ITrackConfig;
 
-void itrack_config_init(ITrackConfig *config,DeviceIntPtr dev,XF86OptionPtr opt);
+void itrack_config_init(struct itrack_config_s *config,DeviceIntPtr dev,XF86OptionPtr opt);
 
 void itrack_config_deinit(DeviceIntPtr dev);

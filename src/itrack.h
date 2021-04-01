@@ -37,7 +37,6 @@ struct itrack_status_s{
 } ;
 
 struct itrack_props_s{
-	// bool   is_absolute_mode;
 	struct MConfig cfg;
 	struct Capabilities caps;
 } ;
