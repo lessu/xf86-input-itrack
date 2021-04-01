@@ -49,4 +49,9 @@ void xf86Msg(int type ,const char *format , ...){
 //     }
 //     va_end(argptr);
 // }
+
+void timercp(struct timeval* dest, const struct timeval* src)
+{
+	memcpy(dest, src, sizeof(struct timeval));
+}
 #endif

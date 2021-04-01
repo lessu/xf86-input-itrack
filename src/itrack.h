@@ -46,7 +46,7 @@ struct itrack_private_s{
 	struct post_stage_s post_stage_handler;
 } ;
 
-typedef struct {
+struct itrack{
 	int fd;
 	struct mtdev dev;
 	DeviceIntPtr local_dev;
@@ -66,4 +66,4 @@ typedef struct {
 	 */
 	// OsTimerPtr timer;
 	// int is_absolute_mode;		// Should absolute mode be enabled ? 0 or 1
-} itrack_t;
+};

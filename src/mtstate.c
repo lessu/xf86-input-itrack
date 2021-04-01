@@ -21,7 +21,7 @@
  **************************************************************************/
 
 #include "mtstate.h"
-
+#include <xf86.h>
 #define LOG_DEBUG_MTSTATE LOG_NULL
 
 /* Count number of bits (Sean Eron Andersson's Bit Hacks).

@@ -1,10 +1,10 @@
 #pragma once
 #include "common.h"
-#include "itrack.h"
-#include "itrack-type.h"
 
-int itrack_open(itrack_t *itrack, int fd);
+struct itrack;
 
-int itrack_close(itrack_t *itrack);
+int itrack_open(struct itrack *itrack, int fd);
 
-bool itrack_read(itrack_t *itrack);
+int itrack_close(struct itrack *itrack);
+
+BOOL itrack_read(struct itrack *itrack);

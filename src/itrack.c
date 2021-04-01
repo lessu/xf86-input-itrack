@@ -39,7 +39,7 @@
 #include "itrack-main.h"
 #include "itrack-config.h"
 #include "debug.h"
-# define LOG_DEBUG_DRIVER LOG_NULL
+#define LOG_DEBUG_DRIVER LOG_NULL
 
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 7
 	#error "Unsupported ABI_XINPUT_VERSION"
@@ -51,7 +51,7 @@ typedef InputInfoPtr LocalDevicePtr;
 
 // static void s_print_action(const struct itrack_action_s *action){
 	// char log[2048] = {0};
-	// bool have_change = FALSE;
+	// BOOL have_change = FALSE;
 	// sprintf(log,"action={\n");
 	// if(action->pointer.x != 0 || action->pointer.y != 0){
 	// 	sprintf(log+strlen(log),"    pointer=(%d,%d)\n",action->pointer.x,action->pointer.y);
@@ -68,11 +68,15 @@ static void s_pointer_control(DeviceIntPtr dev, PtrCtrl *ctrl)
 {
 	LOG_DEBUG_DRIVER("s_pointer_control\n");
 }
+
+static void s_keyboard_control(DeviceIntPtr device,KeybdCtrl *ctrl )
+{
+	LOG_DEBUG_DRIVER("s_keyboard_control\n");
 }
 
 static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 {
-	itrack_t *itrack = local->private;
+	struct itrack *itrack = local->private;
 
 	CARD8 btmap[DIM_BUTTON];
 	Atom axes_labels[NUM_AXES];
@@ -97,6 +101,17 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 	 */
 	SetScrollValuator(dev, 2, SCROLL_TYPE_VERTICAL,   1.0, SCROLL_FLAG_PREFERRED);
 	SetScrollValuator(dev, 3, SCROLL_TYPE_HORIZONTAL, 1.0, SCROLL_FLAG_NONE);
+
+
+	if(!InitKeyboardDeviceStruct(
+		dev,
+		NULL,NULL,
+		s_keyboard_control
+	)){
+		LOG_ERROR("InitKeyboardDeviceStruct for itrack failed");
+		return BadRequest;
+	}
+
 
 	local->fd = xf86OpenSerial(local->options);
 	if (local->fd < 0) {
@@ -129,7 +144,7 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 
 static int device_on(LocalDevicePtr local)
 {
-	itrack_t *itrack = local->private;
+	struct itrack *itrack = local->private;
 	local->fd = xf86OpenSerial(local->options);
 	if (local->fd < 0) {
 		LOG_ERROR("cannot open device\n");
@@ -149,7 +164,7 @@ static int device_on(LocalDevicePtr local)
 
 static int device_off(LocalDevicePtr local)
 {
-	itrack_t *itrack = local->private;
+	struct itrack *itrack = local->private;
 	xf86RemoveEnabledDevice(local);
 	if (itrack_close(itrack))
 		LOG_WARNING("cannot ungrab device\n");
@@ -180,7 +195,7 @@ static int device_close(LocalDevicePtr local){
  */
 static void read_input(LocalDevicePtr local)
 {
-	itrack_t *itrack = local->private;
+	struct itrack *itrack = local->private;
 	// int timer_kind;
 
 	itrack->local_dev = local->dev;
@@ -195,7 +210,7 @@ static void read_input(LocalDevicePtr local)
 static int switch_mode(ClientPtr client, DeviceIntPtr dev, int mode)
 {
 	// LocalDevicePtr local = dev->public.devicePrivate;
-	// itrack_t *itrack = local->private;
+	// struct itrack *itrack = local->private;
 
 	// switch (mode) {
 	// case Absolute:
@@ -238,7 +253,7 @@ static Bool device_control(DeviceIntPtr dev, int mode)
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
 static int preinit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
 {
-	itrack_t *itrack;
+	struct itrack *itrack;
 
 	itrack = calloc(1, sizeof(*itrack));
 	if (!itrack)
@@ -291,7 +306,7 @@ static InputInfoPtr preinit(InputDriverPtr drv, IDevPtr dev, int flags)
 
 static void uninit(InputDriverPtr drv, InputInfoPtr local, int flags)
 {
-	itrack_t *itrack = local->private;
+	struct itrack *itrack = local->private;
 
 	free(local->private);
 	local->private = 0;

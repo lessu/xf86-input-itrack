@@ -1,4 +1,4 @@
-#include "./drag.h"
+#include "drag.h"
 #include "mtstate.h"
 #include "guesture_manager.h"
 #include <assert.h>
@@ -38,7 +38,7 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
 
     if( guesture_manager_is_accept(guesture->guesture.manager,&guesture->guesture) ){
 
-        guesture_post_movment(&guesture->guesture,avg_dvect.x,avg_dvect.y,false);
+        guesture_post_movment(&guesture->guesture,avg_dvect.x,avg_dvect.y,FALSE);
         guesture_post_button_up_cancel(&guesture->guesture,SWIPE3_BUTTON);
 
     }else{
@@ -49,13 +49,13 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
         }
 
         // timercp(&handler->state.start_time   , &touch->update_time);
-        guesture_post_movment(&guesture->guesture,avg_dvect.x,avg_dvect.y,false);
+        guesture_post_movment(&guesture->guesture,avg_dvect.x,avg_dvect.y,FALSE);
 
     }	
     return ;
 }
 
-static bool on_end(void *user_data,bool is_cancel,int touch_count){
+static BOOL on_end(void *user_data,BOOL is_cancel,int touch_count){
     GUESTURE_DEBUG("[drag]on_end\n");
     struct drag_guesture_s *guesture = user_data;
     guesture_post_button_up(&guesture->guesture,SWIPE3_BUTTON,SWIPE3_HOLD_TIME);

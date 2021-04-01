@@ -3,8 +3,8 @@
 #include "debug.h"
 #include "touch-handler.h"
 
-static bool is_touch_needs_to_ignore(const struct Touch *touch){
-	return false;
+static BOOL is_touch_needs_to_ignore(const struct Touch *touch){
+	return FALSE;
 	// if( GETBIT(touch->flags, MT_THUMB) || GETBIT(touch->flags, MT_PALM)
 	// 	//  ||  GETBIT(touch->flags, MT_EDGE) 
 	// ){
@@ -14,14 +14,14 @@ static bool is_touch_needs_to_ignore(const struct Touch *touch){
 	// }
 }
 
-static void on_post_stage_inertia_scroll_state_change(const struct post_stage_s *handler,bool state,void* userdata){
-	itrack_t *itrack = userdata;
+static void on_post_stage_inertia_scroll_state_change(const struct post_stage_s *handler,BOOL state,void* userdata){
+	struct itrack *itrack = userdata;
 	struct timeval time;
  	gettimeofday(&time, NULL);
 	touch_handler_set_post_scrolling_state(&itrack->private.touch,state,&time,&itrack->props);
 }
 
-int itrack_open(itrack_t *itrack, int fd){
+int itrack_open(struct itrack *itrack, int fd){
     int ret;
 	itrack->fd = fd;
 	ret = mtdev_open(&itrack->dev, itrack->fd);
@@ -39,14 +39,14 @@ int itrack_open(itrack_t *itrack, int fd){
 	return ret;
 }
 
-int itrack_close(itrack_t *itrack){
+int itrack_close(struct itrack *itrack){
 	mtdev_close(&itrack->dev);
 	itrack_post_deinit(&itrack->private.post_stage_handler);
 	touch_handler_deinit(&itrack->private.touch);
 	return 0;
 }
 
-bool itrack_read(itrack_t *itrack){
+BOOL itrack_read(struct itrack *itrack){
 	/** todo:// */
 	// struct itrack_action_s *action;
 	

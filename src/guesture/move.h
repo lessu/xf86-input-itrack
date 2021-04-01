@@ -1,5 +1,5 @@
 #pragma once
-#include "./guesture.h"
+#include "guesture.h"
 
 #define PHYSICAL_BUTTON_MIN_MOVE (50)
 

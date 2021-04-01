@@ -27,8 +27,8 @@ struct itrack_props_s;
 
 typedef struct 
 {
-	bool start;
-	bool max_touches_recorded;
+	BOOL start;
+	BOOL max_touches_recorded;
 	struct {
 		enum guard_settle_e physical_button_settle;
 		enum guard_settle_e pretap_settle;
@@ -38,7 +38,7 @@ typedef struct
 	} move_guard;
 	
 	struct {
-		bool 			is_inertia_sliding;
+		BOOL 			is_inertia_sliding;
 		struct timeval 	last_off_time;
 	}scroll_state;
 
@@ -76,4 +76,4 @@ void on_touch_invalid(touch_handler_t *handler,const struct Touch *touch,int tou
 
 void on_physical_button_update(touch_handler_t *handler,const struct timeval *evtime,int physical_button_state);
 
-void touch_handler_set_post_scrolling_state(touch_handler_t *handler,bool on,const struct timeval *time,const struct itrack_props_s *props);
+void touch_handler_set_post_scrolling_state(touch_handler_t *handler,BOOL on,const struct timeval *time,const struct itrack_props_s *props);

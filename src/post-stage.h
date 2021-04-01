@@ -11,7 +11,7 @@
 #define STEP_DISTANCE_NEEDS 400
 
 struct post_stage_s;
-typedef void (*ITrackInertiaScrollStateChangeFn)( const struct post_stage_s *handler , bool is_on,void *userdata);
+typedef void (*ITrackInertiaScrollStateChangeFn)( const struct post_stage_s *handler , BOOL is_on,void *userdata);
 /*
 * Timers documentation:
 * http://www.x.org/releases/X11R7.7/doc/xorg-server/Xserver-spec.html#id2536042
@@ -32,17 +32,17 @@ struct status_item_s {
     struct status_item_s *next;
 };
 struct post_stage_s{
-    bool        is_defering;
+    BOOL        is_defering;
     OsTimerPtr  defer_timer;
     struct defer_arg_s defer_arg;
     int         last_button_status;
     struct {
         // double sum_x,sum_y;
         int         velocity_x,velocity_y;
-        bool        is_inertia_scrolling;
+        BOOL        is_inertia_scrolling;
         OsTimerPtr  inertia_sliding_timer;
         CARD32      passed_time_ms;
-        bool        last_scroll_detected;
+        BOOL        last_scroll_detected;
         struct {
             // CARD32      start_time;
             DeviceIntPtr device_ptr;

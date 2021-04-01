@@ -29,17 +29,27 @@
 
 #include <string.h>
 #include <errno.h>
-// #include <mtdev-mapping.h>
 #include <sys/time.h>
 #include <stdint.h>
+
 /* year-proof millisecond event time */
 typedef uint64_t mstime_t;
 
 /* all bit masks have this type */
 typedef unsigned int bitmask_t;
 
+#include <X11/Xmd.h>
+
+#ifndef TRUE 
+#define TRUE 1
+#endif
+
+#ifndef FALSE 
+#define FALSE 0
+#endif
+
+
 #define DIM_TOUCHES 16
-#define ONE_SECOND_MS (1000)
 
 /**
  * m - bit set (integer)
@@ -101,24 +111,21 @@ typedef unsigned int bitmask_t;
 
 int get_next_log_number( void );
 
-/**
- * 
- * TIME COMMON OPERATION
- * 
- */ 
-/* Retrieve the current time and place it in tv.
- */
-inline void microtime(struct timeval* tv)
-{
-	gettimeofday(tv, NULL);
-}
+// /**
+//  * 
+//  * TIME COMMON OPERATION
+//  * 
+//  */ 
+// /* Retrieve the current time and place it in tv.
+//  */
+// inline void microtime(struct timeval* tv)
+// {
+// 	gettimeofday(tv, NULL);
+// }
 
 /* Copy one time value to another.
  */
-static inline void timercp(struct timeval* dest, const struct timeval* src)
-{
-	memcpy(dest, src, sizeof(struct timeval));
-}
+void timercp(struct timeval* dest, const struct timeval* src);
 
 /* Convert a timeval to milliseconds since the epoch. Truncates additional
  * timer resolution effectively rounding down.
@@ -152,15 +159,15 @@ static inline void timeraddms(const struct timeval* a, const mstime_t b, struct 
 	timeradd(a, &tv, dest);
 }
 
-/* Check if given timeval a is set to epoch time.
- */
-static inline int isepochtime(const struct timeval* a)
-{
-	struct timeval epoch;
-	timerclear(&epoch);
+// /* Check if given timeval a is set to epoch time.
+//  */
+// static inline int isepochtime(const struct timeval* a)
+// {
+// 	struct timeval epoch;
+// 	timerclear(&epoch);
 
-	return timercmp(a, &epoch, ==);
-}
+// 	return timercmp(a, &epoch, ==);
+// }
 
 static inline int64_t time_diff_ms(const struct timeval *nowtime,const struct timeval *basetime){
 	return (int64_t)timertoms(nowtime) - (int64_t)timertoms(basetime);

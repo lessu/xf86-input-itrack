@@ -20,6 +20,7 @@
  **************************************************************************/
 #include <errno.h>
 #include "common.h"
+#include <xf86.h>
 #include "capabilities.h"
 
 #define SETABS(c, x, map, key, fd)					\

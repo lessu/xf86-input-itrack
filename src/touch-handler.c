@@ -7,6 +7,10 @@
 #include "guesture/scroll.h"
 #include "guesture/drag.h"
 #include "guesture/pinch.h"
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+#include "post-stage.h"
 struct defer_callback_set_value_t {
 	void *ptr;
 	uint8_t value[8];
@@ -98,7 +102,7 @@ void on_physical_button_update(touch_handler_t *handler,const struct timeval *ev
 	handler->last_physical_button = physical_button_state;
 }
 
-void touch_handler_set_post_scrolling_state(touch_handler_t *handler,bool on,const struct timeval *time,const struct itrack_props_s *props){
+void touch_handler_set_post_scrolling_state(touch_handler_t *handler,BOOL on,const struct timeval *time,const struct itrack_props_s *props){
 	struct guesture_item_s *item = guesture_manager_find_item_by_name(&handler->guesture_manager,"scroll");
 	assert(item);
 	if( on ){

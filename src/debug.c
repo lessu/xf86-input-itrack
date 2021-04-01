@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <pthread.h>
-
+#include "guesture.h"
 #define DEBUG_LOGGING_ON 0
 
 #define DEBUG_FIFO_PATH "/tmp/itrack_debug_fifo"
@@ -96,7 +96,7 @@ void log_touches(const struct Touch *touches,int mask){
 
 
 
-void log_touches(const itrack_t *itrack,const struct Touch *touches,int mask)
+void log_touches(const struct itrack *itrack,const struct Touch *touches,int mask)
 {
     if( !s_debug_pipe.enabled ) {
         return ;
@@ -129,7 +129,7 @@ void log_touches(const itrack_t *itrack,const struct Touch *touches,int mask)
 
 #endif
 
-static void debug_fifo_thread_main(void *user_data){
+static void* debug_fifo_thread_main(void *user_data){
     while(1){
         s_debug_pipe.is_waiting  = true;
         pthread_cond_wait(&s_debug_pipe.cond,&s_debug_pipe.mutex);
@@ -183,9 +183,10 @@ static void debug_fifo_thread_main(void *user_data){
             /** this should not happen */
             /** stop thread */
             LOG_DEBUG("debug buff write uncomplete.\n");
-            return ;
+            return (void*)0;
         }
     }
+    return (void*)0;
 }
 
 static int debug_fifo_create( void )
@@ -228,7 +229,7 @@ void debug_fifo_enable( void ){
         s_debug_pipe.fd = -1;
         pthread_cond_init(&s_debug_pipe.cond,NULL);
         pthread_mutex_init(&s_debug_pipe.mutex,NULL);
-        pthread_create(&s_debug_pipe.thread,0,(void (*)(void *))debug_fifo_thread_main,NULL);
+        pthread_create(&s_debug_pipe.thread,0,debug_fifo_thread_main,NULL);
     }
 
 }

@@ -1,8 +1,7 @@
 #pragma once
-#include "./guesture.h"
+#include "guesture.h"
 
-// #define SCROLL_POST_FORBIDEN_TIME_MS (300)
-#define SCROLL_GUESTURE_DHISTORY_LENGTH (3)
+#define SCROLL_GUESTURE_DHISTORY_LENGTH 3
 
 struct scroll_guesture_s
 {

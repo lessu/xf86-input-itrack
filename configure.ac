@@ -22,7 +22,7 @@
 # Process this file with autoconf to produce a configure script
 
 AC_PREREQ([2.71])
-AC_INIT([xf86-itrack],[0.0.1],[https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],[xf86-itrack])
+AC_INIT([xf86-input-itrack],[0.1.0],[https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],[xf86-itrack])
 
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([Makefile.am])

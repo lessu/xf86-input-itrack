@@ -1,4 +1,4 @@
-#include "./tap.h"
+#include "tap.h"
 #include "mtstate.h"
 #include "guesture_manager.h"
 #include <assert.h>
@@ -15,7 +15,7 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
 
     // guesture->update_event_count ++;
 
-    bool is_thumb = false;
+    BOOL is_thumb = FALSE;
     int count = 0;
     int max_move_dist = 0;
     guesture->sum_x = 0;
@@ -33,7 +33,7 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
             max_move_dist = abs(ptouch->dy);
         }
         if(ptouch->flags & (1<<MT_THUMB)){
-            is_thumb = true;
+            is_thumb = TRUE;
         }
     }
 
@@ -63,7 +63,7 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
     return ;
 }
 
-static bool on_end(void *user_data,bool is_cancel,int touch_count){
+static BOOL on_end(void *user_data,BOOL is_cancel,int touch_count){
     TAP_GUESTURE_DEBUG("[tap]on_end\n");
     struct tap_guesture_s *guesture = user_data;
     struct timeval time;

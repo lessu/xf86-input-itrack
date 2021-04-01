@@ -1,10 +1,10 @@
 #include "pinch.h"
 #include "mtstate.h"
 #include "math.h"
-#define MIN_MOVEMENT (40)
-#define THRESH_HOLD_ANGLE (30)
+#define MIN_MOVEMENT 40
+#define THRESH_HOLD_ANGLE 30
 /** to zoomfor 1x PINCH_SCALE_PRESCALE distance is needed */
-#define PINCH_SCALE_PRESCALE (400.0) 
+#define PINCH_SCALE_PRESCALE 400.0
 
 static double vector_dot_cos_theta(double ax,double ay,double bx,double by){
     return (ax*bx + ay*by)/(sqrt(ax*ax+ay*ay)*sqrt(bx*bx+by*by));
@@ -89,7 +89,7 @@ end:
     return ;
 }
 
-static bool on_end(void *user_data,bool is_cancel,int touch_count){
+static BOOL on_end(void *user_data,BOOL is_cancel,int touch_count){
     // struct pinch_guesture_s *guesture = user_data;
     GUESTURE_DEBUG("[pinch]on_end\n");
     return TRUE;

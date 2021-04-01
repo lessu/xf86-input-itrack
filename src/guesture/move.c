@@ -1,9 +1,9 @@
-#include "./move.h"
+#include "move.h"
 #include "guesture_manager.h"
 #include <assert.h>
 #include "itrack-type.h"
 #include "mtstate.h"
-#include <stdbool.h>
+
 
 static void on_start(void *handler,const struct Touch *touches,int touch_bit){
     GUESTURE_DEBUG("[move]on_start\n");
@@ -57,13 +57,13 @@ static void on_update(void *handler,const struct Touch *touches,int touch_bit){
         if(guesture->guesture.status.match_state == GUESTURE_MATHING){
             guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK);
         }else if(guesture->guesture.status.match_state == GUESTURE_OK){
-            guesture_post_movment(&guesture->guesture,touch -> dx,touch -> dy,false);
+            guesture_post_movment(&guesture->guesture,touch -> dx,touch -> dy,FALSE);
         }
     }
 end:
     return ;
 }
-static bool on_end(void *handler,bool is_cancel,int touch_count){
+static BOOL on_end(void *handler,BOOL is_cancel,int touch_count){
     GUESTURE_DEBUG("[move]on_end\n");
     return TRUE;
 }

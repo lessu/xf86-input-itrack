@@ -72,14 +72,14 @@ struct config_prop_s* xconfig_add_prop(
     enum config_type_e type
 );
 
-bool xconfig_add_conf(
+BOOL xconfig_add_conf(
     struct config_prop_s *prop,
     void *val_ptr,
     size_t val_size,
     const char *conf_name,
     ConfigSetFn setfn,
     void *setfn_userdata,
-    bool userdata_needs_free
+    BOOL userdata_needs_free
 );
 
 

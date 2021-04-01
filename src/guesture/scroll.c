@@ -1,11 +1,12 @@
-#include "./scroll.h"
+#include "scroll.h"
 #include "guesture_manager.h"
 #include "guesture.h"
 #include <assert.h>
-#define SCROLL_INERTIA_MULTIPLIER (1.6f)
-#define SIN_30 (0.5f)
-#define SIN_60 (0.86602540378444f)
-#define SIN_45 (0.707f)
+#include <math.h>
+#define SCROLL_INERTIA_MULTIPLIER 1.6f
+#define SIN_30 0.5f
+#define SIN_60 0.86602540378444f
+#define SIN_45 0.707f
 static void s_push_history(struct scroll_guesture_s *guesture,struct gi_vector_s vect){
     guesture->dhistory[guesture->dhistory_length] = vect;
     if(guesture->dhistory_length + 1 == SCROLL_GUESTURE_DHISTORY_LENGTH){
@@ -86,8 +87,8 @@ static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
         double sin_angel = 1.0f * avg_dvect.x / sqrt(avg_dvect.x * avg_dvect.x + avg_dvect.y*avg_dvect.y );
         GUESTURE_DEBUG("sin_angel = %lf, type = %d\n",sin_angel,guesture->scroll_type);
         // sin(15°) = 0.258
-        bool is_x_mode = ABSVAL(sin_angel) > SIN_45;
-        bool is_y_mode = ABSVAL(sin_angel) < SIN_45;
+        BOOL is_x_mode = ABSVAL(sin_angel) > SIN_45;
+        BOOL is_y_mode = ABSVAL(sin_angel) < SIN_45;
         switch(guesture->scroll_type){
         case SCROLL_TYPE_UNDETERMINTED:
             if(is_x_mode){
@@ -139,7 +140,7 @@ static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
     return ;
 }
 
-static bool on_end(void *userdata,bool is_cancel,int touch_count){
+static BOOL on_end(void *userdata,BOOL is_cancel,int touch_count){
     GUESTURE_DEBUG("[scroll]on_end\n");
     struct scroll_guesture_s *guesture = userdata;
     /** scroll to move */

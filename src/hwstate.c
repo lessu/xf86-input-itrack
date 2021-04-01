@@ -20,6 +20,7 @@
  **************************************************************************/
 
 #include "hwstate.h"
+#include "itrack_label.h"
 
 void hwstate_init(struct HWState *s, const struct Capabilities *caps)
 {

@@ -42,8 +42,8 @@ static void s_guesture_update(struct guesture_manager_s *manager,struct guesture
         item->guesture->callbacks.on_update(item->guesture->userdata,touches,touch_bit);
     }
 }
-static bool s_guesture_end(struct guesture_manager_s *manager,struct guesture_item_s *item,bool cancel,int count){
-    bool ret = 0;
+static BOOL s_guesture_end(struct guesture_manager_s *manager,struct guesture_item_s *item,BOOL cancel,int count){
+    BOOL ret = 0;
     if( item->guesture->status.match_state == GUESTURE_MATHING || 
         item->guesture->status.match_state == GUESTURE_OK 
     ){
@@ -412,7 +412,7 @@ void guesture_manager_physical_button_update(struct guesture_manager_s *manager,
     manager->physical_button = buttonbit;
 }
 
-bool guesture_manager_is_accept(struct guesture_manager_s *manager,struct guesture_s *guesture){
+BOOL guesture_manager_is_accept(struct guesture_manager_s *manager,struct guesture_s *guesture){
     if( manager->private.accepted_item ){
         return manager->private.accepted_item->guesture == guesture;
     }

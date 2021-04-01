@@ -20,6 +20,7 @@
  **************************************************************************/
 #include "common.h"
 #include "mconfig.h"
+#include <xf86.h>
 
 void mconfig_update_caps(struct MConfig* cfg, const struct Capabilities* caps)
 {

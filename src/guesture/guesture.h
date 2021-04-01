@@ -5,8 +5,10 @@
 #pragma once
 #include "itrack-type.h"
 #include "mtstate.h"
-#include <stdbool.h>
 #include "common.h"
+#include "./type.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 #define GUESTURE_DEBUG LOG_NULL
 
@@ -37,7 +39,7 @@ struct guesture_status_s{
         GUESTURE_FAILED,
         GUESTURE_OK,
     } match_state;
-    bool            is_essential;
+    BOOL            is_essential;
     struct timeval  state_update_time;
 };
 
@@ -51,7 +53,7 @@ struct guesture_callbacks_s
     /**
      * @retval the return values is ignored
      */ 
-    bool (*on_end)(void *user_data,bool is_cancel,int touch_count);
+    BOOL (*on_end)(void *user_data,BOOL is_cancel,int touch_count);
 };
 
 struct guesture_manager_s;
@@ -87,7 +89,7 @@ void guesture_set_match(struct guesture_s *guesture,enum guesture_match_e set_ma
  * actions
  */ 
 void guesture_post_action(struct guesture_s *guesture,struct itrack_action_s *action);
-void guesture_post_movment(struct guesture_s *guesture,int x,int y,bool absolute);
+void guesture_post_movment(struct guesture_s *guesture,int x,int y,BOOL absolute);
 void guesture_post_button_up(struct guesture_s *guesture,int button_id,int defer_timeout);
 void guesture_post_button_up_cancel(struct guesture_s *guesture,int button_id);
 void guesture_post_button_down(struct guesture_s *guesture,int button_id);

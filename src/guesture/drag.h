@@ -6,7 +6,7 @@ struct drag_guesture_s
     struct guesture_s   guesture;
     int                 sum_x,sum_y;
     struct timeval      hold_time;
-    bool                loaded;
+    BOOL                loaded;
 };
 
 void drag_guesture_init(struct drag_guesture_s *guesture);

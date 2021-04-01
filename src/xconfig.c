@@ -13,7 +13,7 @@ struct config_item_s{
     size_t val_size;
     ConfigSetFn setfn;
     void *setfn_userdata;
-    bool userdata_needs_free;
+    BOOL userdata_needs_free;
     const struct config_prop_s *prop;
     struct config_item_s *next;
 };
@@ -186,7 +186,7 @@ struct config_prop_s* xconfig_add_prop( const char *prop_name,const char *prop_d
 }
 
 
-bool xconfig_add_conf(
+BOOL xconfig_add_conf(
     struct config_prop_s *prop,
     void *val_ptr,
     size_t val_size,
@@ -194,7 +194,7 @@ bool xconfig_add_conf(
     // void *default_val,
     ConfigSetFn setfn,
     void *setfn_userdata,
-    bool userdata_needs_free
+    BOOL userdata_needs_free
 ){
 
     struct config_item_s *item = malloc( sizeof(struct config_item_s));
@@ -220,12 +220,12 @@ bool xconfig_add_conf(
     item->setfn     = setfn;
     item->setfn_userdata        = setfn_userdata;
     item->userdata_needs_free   = userdata_needs_free;
-    strncpy( item->conf_name, conf_name, sizeof(item->conf_name) );
+    strncpy( item->conf_name, conf_name, sizeof(item->conf_name) - 1 );
 
     if(item->setfn == NULL){
         item->setfn = xconfig_setfn_default;
     }
-    return true;
+    return TRUE;
 
 }
 

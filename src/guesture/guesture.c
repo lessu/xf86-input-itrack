@@ -3,7 +3,7 @@
 
 void guesture_init(struct guesture_s *guesture,const char *name,const struct guesture_callbacks_s *callbacks,void* userdata){
     bzero(guesture,sizeof(struct guesture_s));
-    strncpy(guesture->name,name,MAX_GUESTURE_NAME_LENGTH);
+    strncpy(guesture->name,name,MAX_GUESTURE_NAME_LENGTH - 1);
     guesture->callbacks = *callbacks;
     guesture->userdata = userdata;
 }
@@ -49,7 +49,7 @@ void guesture_post_action(struct guesture_s *guesture,struct itrack_action_s *ac
     }
 }
 
-void guesture_post_movment(struct guesture_s *guesture,int x,int y,bool absolute){
+void guesture_post_movment(struct guesture_s *guesture,int x,int y,BOOL absolute){
     struct itrack_action_s *action = malloc(sizeof(struct itrack_action_s));
     bzero(action,sizeof(struct itrack_action_s) );
     action->pointer.x = x;

@@ -1,5 +1,5 @@
 #pragma once
-#include "./guesture.h"
+#include "guesture.h"
 #define TAP_GUESTURE_DEBUG(...) 
 #define TAP_TIME_MAX_HOLD_TIME      150
 #define TAP_UP_TIME  				20
@@ -15,7 +15,6 @@ struct tap_guesture_s
 {
     struct guesture_s   guesture;
     int                 sum_x,sum_y;
-    // uint32_t            update_event_count;
 };
 
 void tap_guesture_init(struct tap_guesture_s *guesture,int touch_count);

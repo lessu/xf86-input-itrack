@@ -33,3 +33,7 @@ config.h.in
 
 debug_main
 libguesture.la
+
+*.in
+*~
+.deps

@@ -50,7 +50,7 @@ dist-hook: ChangeLog
 # _ladir passes a dummy rpath to libtool so the thing will actually link
 # TODO: -nostdlib/-Bstatic/-lgcc platform magic, not installing the .a, etc.
 
-AM_CFLAGS = $(XORG_CFLAGS)  -g -std=gnu99 -Wno-declaration-after-statement -I$(top_srcdir)/include/ -I$(top_srcdir)/src -I$(top_srcdir)/src/guesture
+AM_CFLAGS = $(XORG_CFLAGS) -g -std=gnu99 -Wno-declaration-after-statement  -Wno-redundant-decls -I$(top_srcdir)/include/ -I$(top_srcdir)/src -I$(top_srcdir)/src/guesture
 
 noinst_LTLIBRARIES = libguesture.la
 libguesture_la_CFLAGS=$(AM_CFLAGS) -D__DEBUG__
@@ -60,7 +60,8 @@ libguesture_la_SOURCES  = src/guesture/guesture.c \
                         src/guesture/tap.c \
                         src/guesture/scroll.c \
                         src/guesture/drag.c \
-                        src/guesture/pinch.c
+                        src/guesture/pinch.c \
+                        src/guesture/guesture_manager.c
 
 @DRIVER_NAME@_drv_la_LTLIBRARIES = @DRIVER_NAME@_drv.la
 @DRIVER_NAME@_drv_la_LDFLAGS = -module -avoid-version
@@ -77,7 +78,6 @@ libguesture_la_SOURCES  = src/guesture/guesture.c \
                                src/mtstate.c \
                                src/hwstate.c \
                                src/common.c \
-                               src/guesture/guesture_manager.c \
                                src/debug.c \
                                src/touch-handler.c \
                                src/post-stage.c \

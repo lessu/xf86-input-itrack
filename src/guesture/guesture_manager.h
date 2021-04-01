@@ -1,6 +1,6 @@
 #pragma once
-// #include "guesture.h"
-#include <stdbool.h>
+#include "./type.h"
+
 #define MAX_CALLBACK_COUNT (8)
 #define MAX_GUESTURE_COUNT (32)
 #define GUESTURE_PRE_WAITING_TIME  (150)
@@ -53,7 +53,7 @@ struct guesture_manager_s
         struct guesture_item_s *current_guesture_item_list[MAX_GUESTURE_COUNT];
         int                     current_guesture_count;
         struct guesture_item_s *accepted_item;
-        // bool                    guesture_state_has_changed;    
+        // BOOL                    guesture_state_has_changed;    
         enum{
             GUESTURE_MANAGER_CALLBACK_NONE,
             GUESTURE_MANAGER_CALLBACK_START,
@@ -109,7 +109,7 @@ void guesture_manager_physical_button_update(struct guesture_manager_s *manager,
 /**
  * guesture api
  */ 
-bool guesture_manager_is_accept(struct guesture_manager_s *manager,struct guesture_s *guesture);
+BOOL guesture_manager_is_accept(struct guesture_manager_s *manager,struct guesture_s *guesture);
 
 void guesture_manager_set_guesture_state_change(struct guesture_manager_s *manager,struct guesture_s *guesture);
 
