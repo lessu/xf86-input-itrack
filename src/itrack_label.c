@@ -23,7 +23,7 @@ void itrack_label_axes_init(Atom *map)
 
 void itrack_label_button_init(Atom *map,CARD8 *btmap)
 {
-	for(int i = 0;i++;i < DIM_BUTTON){
+	for(int i = 0; i < DIM_BUTTON ; i ++){
 		btmap[i] = i;
 	}
 

@@ -26,7 +26,7 @@ int itrack_open(struct itrack *itrack, int fd){
 	itrack->fd = fd;
 	ret = mtdev_open(&itrack->dev, itrack->fd);
 	if (ret){
-		LOG_ERROR("mtdev_open error");
+		LOG_ERROR("mtdev_open error\n");
 		goto error;
 	}
 	hwstate_init(&itrack->hs , &itrack->props.caps);

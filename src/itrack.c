@@ -92,7 +92,7 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 			NUM_AXES, axes_labels
 		)
 	){
-		LOG_ERROR("InitPointerDeviceStruct for itrack failed");
+		LOG_ERROR("InitPointerDeviceStruct for itrack failed\n");
 		return BadRequest;
 	}
 	/* 
@@ -103,14 +103,14 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 	SetScrollValuator(dev, 3, SCROLL_TYPE_HORIZONTAL, 1.0, SCROLL_FLAG_NONE);
 
 
-	if(!InitKeyboardDeviceStruct(
-		dev,
-		NULL,NULL,
-		s_keyboard_control
-	)){
-		LOG_ERROR("InitKeyboardDeviceStruct for itrack failed");
-		return BadRequest;
-	}
+	// if(!InitKeyboardDeviceStruct(
+	// 	dev,
+	// 	NULL,NULL,
+	// 	s_keyboard_control
+	// )){
+	// 	LOG_ERROR("InitKeyboardDeviceStruct for itrack failed");
+	// 	return BadRequest;
+	// }
 
 
 	local->fd = xf86OpenSerial(local->options);
@@ -120,7 +120,7 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 	}
 	int rc = read_capabilities(&itrack->props.caps, local->fd);
 	if (rc < 0){
-		LOG_ERROR("cannot read capabilities");
+		LOG_ERROR("cannot read capabilities\n");
 	}
 	output_capabilities(&itrack->props.caps);
 	

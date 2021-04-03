@@ -7,7 +7,7 @@
 #define MAX_BUTTON_NUMBER 32
 #define SCROLL_INERTIA_SPEED_TRIGER 1000
 #define SCROLL_FRICTION             50000 /** decent 50000 speed persecond*/
-#define SCROLL_INERTIA_POST_RATE    (60) /** post 60 event per second*/
+#define SCROLL_INERTIA_POST_RATE    60 /** post 60 event per second*/
 #define STEP_DISTANCE_NEEDS 400
 
 struct post_stage_s;

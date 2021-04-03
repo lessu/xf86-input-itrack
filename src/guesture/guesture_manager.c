@@ -166,7 +166,7 @@ void guesture_manager_init(struct guesture_manager_s *manager,struct post_stage_
 int  guesture_manager_add(struct guesture_manager_s *manager,struct guesture_s *guesture,int priority){
     for(int i = 0; i < MAX_GUESTURE_COUNT; i ++ ){
         if( manager->guesture_list[i].used == TRUE && manager->guesture_list[i].priority == priority){
-            LOG_ERROR("guesture_manager_add duplicated priority");
+            LOG_ERROR("guesture_manager_add duplicated priority\n");
             return -1;
         }
     }
