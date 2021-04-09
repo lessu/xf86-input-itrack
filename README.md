@@ -69,10 +69,10 @@ EndSection
 ```
 For pointer move configuration on magic trackpad 2,I use following Options,make it close to macos.
 ```
-        Option "ConstantDeceleration" "10.000000"
-        Option "AdaptiveDeceleration" "5.00000"
-        Option "VelocityScale" "0.2"
-        Option "AccelerationProfile" "2"
+    Option "ConstantDeceleration" "2.000000"
+    Option "AdaptiveDeceleration" "5.00000"
+    Option "VelocityScale" "0.2"
+    Option "AccelerationProfile" "2"
 ```
 
 # Debug
