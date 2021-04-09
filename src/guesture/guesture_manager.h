@@ -1,11 +1,27 @@
 #pragma once
 #include "./type.h"
 
-#define MAX_CALLBACK_COUNT (8)
-#define MAX_GUESTURE_COUNT (32)
-#define GUESTURE_PRE_WAITING_TIME  (150)
-#define GUESTURE_PRE_WAITTING_DIST (60)
-#define GUESTURE_CHANGING_TIME (150)
+#define MAX_CALLBACK_COUNT 8
+#define MAX_GUESTURE_COUNT 32
+/**
+ * From 0 touch to 1 touch,It go in pre wait state
+ * Because we are not should if there will be more touch
+ * 
+ * So wait this `time` 
+ * or this touch movement least than `dist`
+ * util we can sure no more touch will come
+ */ 
+#define GUESTURE_PRE_WAITING_TIME  150
+#define GUESTURE_PRE_WAITTING_DIST 60
+/** 
+ * when touch count changes,
+ * It will go into changing state.
+ * In this state no action could emit
+ * 
+ * How long to stay in chaning state 
+ * when touch count changes 
+ */
+#define GUESTURE_CHANGING_TIME 150
 // #define GUESTURE_POST_WAITING_TIME (200)
 #define GESTURE_BUTTON_LEFT 0
 #define GESTURE_BUTTON_MIDDLE 1
