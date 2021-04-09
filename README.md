@@ -77,11 +77,11 @@ For pointer move configuration on magic trackpad 2,I use following Options,make 
 
 # Debug
 I used this way to debug.
-* 1,add a new user eg."x11_dev",with x11 permission,and configure him to able to use `startx` cmd start X11 enviroment.
+* 1,add a new user eg."x11_dev",add him to 'input' group
 * 2,code ,make ,and install 
 * 3,switch to tty2,and login with x11_dev,run `startx -- :1` to start a new X11 instance (X11 debug env)
-* 4,retry how trackpad move
-* 5,swith to tty1(X11 coding env),goto step 2 until done
+* 4,retry how trackpad works
+* 5,swith to tty1(X11 coding env),goto step 2
 
 ## FIFO
 A debug fifo(/tmp/itrack_debug_fifo) is created when set `-DDEBUG_FIFO=1`
