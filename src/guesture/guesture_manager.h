@@ -7,6 +7,9 @@
 #define GUESTURE_PRE_WAITTING_DIST (60)
 #define GUESTURE_CHANGING_TIME (150)
 // #define GUESTURE_POST_WAITING_TIME (200)
+#define GESTURE_BUTTON_LEFT 0
+#define GESTURE_BUTTON_MIDDLE 1
+#define GESTURE_BUTTON_RIGHT 2
 
 struct post_stage_s;
 struct itrack_action_s;

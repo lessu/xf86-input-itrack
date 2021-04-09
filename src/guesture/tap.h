@@ -6,9 +6,9 @@
 #define TAP_MOVE_TOTAL_DIST2    		    (100*100)
 #define TAP_MOVE_UPDATE_DIST                (35)
 
-#define TAP_1_BUTTON 	      0
-#define TAP_2_BUTTON 	      2
-#define TAP_3_BUTTON 	      1
+#define TAP_1_BUTTON 	      GESTURE_BUTTON_LEFT
+#define TAP_2_BUTTON 	      GESTURE_BUTTON_RIGHT
+#define TAP_3_BUTTON 	      GESTURE_BUTTON_MIDDLE
 #define TAP_4_BUTTON 	      3
 
 struct tap_guesture_s

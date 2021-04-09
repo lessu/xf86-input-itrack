@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "itrack-type.h"
 #include "mtstate.h"
-
+#include "post-stage.h"
 
 static void on_start(void *handler,const struct Touch *touches,int touch_bit){
     GUESTURE_DEBUG("[move]on_start\n");
@@ -55,7 +55,18 @@ static void on_update(void *handler,const struct Touch *touches,int touch_bit){
         guesture->physical_button_settle = PHYSICAL_BUTTON_SETTLE_NONE;
     }else{
         if(guesture->guesture.status.match_state == GUESTURE_MATHING){
+            /** 
+             * move gesture is the simplest one
+             * as long as move can receive update event 
+             * it always matches
+             */
             guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK);
+            if(
+                guesture->guesture.manager->post_stage->is_defering &&
+                GETBIT(guesture->guesture.manager->post_stage->defer_arg.button,GESTURE_BUTTON_LEFT)
+            ){
+                guesture_post_button_up(&guesture->guesture,GESTURE_BUTTON_LEFT,0);
+            }
         }else if(guesture->guesture.status.match_state == GUESTURE_OK){
             guesture_post_movment(&guesture->guesture,touch -> dx,touch -> dy,FALSE);
         }

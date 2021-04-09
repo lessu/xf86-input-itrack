@@ -213,6 +213,16 @@ int itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, const
 			// LOG_ACTION("button %d down\n", i);
 		}
 		if( GETBIT(action->button.up , i) ){
+			/** 
+			 * if current up button is defered one,
+			 * Cancel defred one 
+			 */
+			if(GETBIT(handler->defer_arg.button , i)){
+				SETBIT(handler->defer_arg.button ,i);
+				if(handler->defer_arg.button == 0){
+					TimerCancel(handler->defer_timer);
+				}
+			}
 			xf86PostButtonEvent(device_ptr, FALSE, i + 1, 0, 0, 0);
 			// LOG_ACTION("button %d up\n", i);
 		}
