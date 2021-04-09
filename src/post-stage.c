@@ -3,6 +3,7 @@
 #include <xf86_OSproc.h>
 #include <xf86Xinput.h>
 #include "post-stage.h"
+#include "post_stage/movement.h"
 #define ONE_SECOND_MS (1000)
 
 #define LOG_ACTION LOG_NULL
@@ -103,6 +104,9 @@ void itrack_post_init(struct post_stage_s *handler){
 	handler->scroll.inertia_sliding_timer = 0;
 	handler->scroll.is_inertia_scrolling = FALSE;
 	handler->status_itr = NULL;
+
+	handler->movement = malloc(sizeof (struct movement_s) );
+	movement_init(handler->movement);
 }
 
 void itrack_post_deinit(struct post_stage_s *handler){
@@ -112,9 +116,13 @@ void itrack_post_deinit(struct post_stage_s *handler){
         handler->is_defering = FALSE;
 	}
 
-	//  to free all
+	// To free all
 
-	// handler->status_itr = NULL;.
+	movement_deinit(handler->movement);
+	free(handler->movement);
+	handler->movement = NULL;
+
+	// handler->status_itr = NULL;
 }
 // void itrack_post_copy(struct post_stage_s *handler,const struct itrack_action_s __nonull *action){
 // 	struct status_item_s **it = &handler->status_itr;
@@ -274,6 +282,14 @@ int itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, const
 		}
 	}
 
+	struct movement_action_s raw_movement_action;
+	raw_movement_action.dx = action->pointer.x;
+	raw_movement_action.dy = action->pointer.y;
+	raw_movement_action.time = action->emit_time;
+	
+	struct movement_action_s movement_action = movement_add(handler->movement,&raw_movement_action);
+
+
 	if(action->pointer.move_type == RELATIVE){
 		/* 
 		 * Give the HW coordinates to Xserver as absolute coordinates, these coordinates
@@ -284,7 +300,7 @@ int itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, const
 									0 /** start valuator */, 
 									2 /** valuator count */,
 									/** valuators */
-									action->pointer.x, action->pointer.y
+									movement_action.dx, movement_action.dy
 							);
 	}else if(action->pointer.move_type == ABSOLUTE){
 		/* 

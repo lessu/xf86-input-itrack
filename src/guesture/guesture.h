@@ -96,3 +96,8 @@ void guesture_post_button_down(struct guesture_s *guesture,int button_id);
 void guesture_post_button_down_and_up(struct guesture_s *guesture,int button_id,int defer_timeout);
 void guesture_post_scroll(struct guesture_s *guesture,int x,int y,double vx,double vy);
 void guesture_post_scroll_end(struct guesture_s *guesture);
+
+/**
+ * 
+ */
+const struct timeval *guesture_get_time(struct guesture_s *guesture);

@@ -42,6 +42,7 @@ void guesture_set_match(struct guesture_s *guesture,enum guesture_match_e set_ma
 }
 
 void guesture_post_action(struct guesture_s *guesture,struct itrack_action_s *action){
+    action->emit_time = *guesture_get_time(guesture);
     if(guesture->action_fn){
         guesture->action_fn(guesture,action,guesture->action_userdata);
     }else{
@@ -125,4 +126,8 @@ void guesture_post_scroll_end(struct guesture_s *guesture){
     action->scroll.holding = FALSE;
 
     guesture_post_action(guesture,action);
+}
+
+const struct timeval *guesture_get_time(struct guesture_s *guesture){
+    return &guesture->manager->last_update_time;
 }

@@ -2,3 +2,11 @@
 OK -- 2.three finger drag-> leave, 1 finger move ,won't cancel drag status
 3.noise touch when typeing in notebooks
 4.figer move noice
+
+
+# 1.4 noise when leave
+1.cache last 3 times movement
+
+2.move current + somefn(cached)
+
+3.when leave clear cached 

@@ -81,6 +81,7 @@ libguesture_la_SOURCES  = src/guesture/guesture.c \
                                src/debug.c \
                                src/touch-handler.c \
                                src/post-stage.c \
+                               src/post_stage/movement.c \
                                src/xconfig.c \
                                src/itrack-config.c
 

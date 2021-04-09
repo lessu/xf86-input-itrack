@@ -11,8 +11,8 @@
  * or this touch movement least than `dist`
  * util we can sure no more touch will come
  */ 
-#define GUESTURE_PRE_WAITING_TIME  150
-#define GUESTURE_PRE_WAITTING_DIST 60
+#define GUESTURE_PRE_WAITING_TIME  80
+#define GUESTURE_PRE_WAITTING_DIST 30
 /** 
  * when touch count changes,
  * It will go into changing state.
@@ -78,8 +78,8 @@ struct guesture_manager_s
             GUESTURE_MANAGER_CALLBACK_START,
             GUESTURE_MANAGER_CALLBACK_UPDATE,
             GUESTURE_MANAGER_CALLBACK_END,
-        }                    callback_state;
-        struct timeval                 state_changing_until;
+        } callback_state;
+        struct timeval          state_changing_until;
         int                     max_touches_number;
     }private;
 
@@ -87,7 +87,7 @@ struct guesture_manager_s
      * guesture manager will only try to match alt guesture when it is un-null
     */
     struct guesture_item_s        *alt_guesture;
-    struct timeval                last_guesture_time;
+    // struct timeval                last_guesture_time;
     struct guesture_item_s        *last_guesture;
     int                           physical_button;
 
@@ -104,6 +104,10 @@ struct guesture_manager_s
     // todo:// to rebuild
     struct post_stage_s           *post_stage;
     struct guesture_manager_action_itr_s *action_itr;
+
+
+    /** last time when manager was feed with a touch event*/
+    struct timeval last_update_time;
 };
 
 

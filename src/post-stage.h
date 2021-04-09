@@ -10,6 +10,7 @@
 #define SCROLL_INERTIA_POST_RATE    60 /** post 60 event per second*/
 #define STEP_DISTANCE_NEEDS 400
 
+struct movement_s;
 struct post_stage_s;
 typedef void (*ITrackInertiaScrollStateChangeFn)( const struct post_stage_s *handler , BOOL is_on,void *userdata);
 /*
@@ -53,6 +54,8 @@ struct post_stage_s{
         void* state_change_fn_userdata;
     } scroll;
     struct status_item_s *status_itr;
+
+    struct movement_s *movement; 
 };
 
 void itrack_post_init(struct post_stage_s *handler);

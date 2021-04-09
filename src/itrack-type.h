@@ -40,4 +40,5 @@ struct itrack_action_s{
         int    holding;
     } scroll;
 
+    struct timeval emit_time;
 };
