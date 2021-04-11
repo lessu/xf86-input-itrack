@@ -206,9 +206,11 @@ int itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, const
 		if( GETBIT(action->physical_button , i) != GETBIT(handler->last_button_status , i) ){
 			if(GETBIT(action->physical_button , i)){
 				xf86PostButtonEvent(device_ptr, FALSE, i + 1, 1, 0, 0);
+				movement_clear(handler->movement);
 				// LOG_ACTION("button %d down\n", i);
 			}else{
 				xf86PostButtonEvent(device_ptr, FALSE, i + 1, 0, 0, 0);
+				movement_clear(handler->movement);
 				// LOG_ACTION("button %d up\n", i);
 			}
 		}
@@ -282,38 +284,48 @@ int itrack_post_read(struct post_stage_s *handler,DeviceIntPtr device_ptr, const
 		}
 	}
 
-	struct movement_action_s raw_movement_action;
-	raw_movement_action.dx = action->pointer.x;
-	raw_movement_action.dy = action->pointer.y;
-	raw_movement_action.time = action->emit_time;
-	
-	struct movement_action_s movement_action = movement_add(handler->movement,&raw_movement_action);
+	if(
+		action->button.down > 0 || 
+		action->button.up > 0 || 
+		action->button.defer_up.button > 0
+	){
+		movement_clear(handler->movement);
+	}
 
+	if(action->pointer.move_type!=NONE){
+		struct movement_action_s raw_movement_action;
+		raw_movement_action.dx = action->pointer.x;
+		raw_movement_action.dy = action->pointer.y;
+		raw_movement_action.time = action->emit_time;
+		struct movement_action_s movement_action = movement_add(handler->movement,&raw_movement_action);
 
-	if(action->pointer.move_type == RELATIVE){
-		/* 
-		 * Give the HW coordinates to Xserver as absolute coordinates, these coordinates
-		 * are not scaled, this is oke if the touchscreen has the same resolution as the display.
-		 */
-		xf86PostMotionEvent(device_ptr, 
-									Relative /** absolute */, 
-									0 /** start valuator */, 
-									2 /** valuator count */,
-									/** valuators */
-									movement_action.dx, movement_action.dy
-							);
-	}else if(action->pointer.move_type == ABSOLUTE){
-		/* 
-		 * Give the HW coordinates to Xserver as absolute coordinates, these coordinates
-		 * are not scaled, this is oke if the touchscreen has the same resolution as the display.
-		 */
-		xf86PostMotionEvent(device_ptr, 
-									Absolute /** absolute */, 
-									0 /** start valuator */, 
-									2 /** valuator count */,
-									/** valuators */
-									action->pointer.x, action->pointer.y
-							);
+		if(action->pointer.move_type == RELATIVE){
+			/* 
+			* Give the HW coordinates to Xserver as absolute coordinates, these coordinates
+			* are not scaled, this is oke if the touchscreen has the same resolution as the display.
+			*/
+			xf86PostMotionEvent(device_ptr, 
+										Relative /** absolute */, 
+										0 /** start valuator */, 
+										2 /** valuator count */,
+										/** valuators */
+										movement_action.dx, movement_action.dy
+								);
+		}else if(action->pointer.move_type == ABSOLUTE){
+			/* 
+			* Give the HW coordinates to Xserver as absolute coordinates, these coordinates
+			* are not scaled, this is oke if the touchscreen has the same resolution as the display.
+			*/
+			xf86PostMotionEvent(device_ptr, 
+										Absolute /** absolute */, 
+										0 /** start valuator */, 
+										2 /** valuator count */,
+										/** valuators */
+										action->pointer.x, action->pointer.y
+								);
+		}
+	}else{
+
 	}
 	free(action);
 	free(it);

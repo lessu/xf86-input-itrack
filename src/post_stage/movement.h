@@ -1,6 +1,6 @@
 #ifndef MOVEMENT_H
 #define MOVEMENT_H
-#define MOVEMENT_CACHE_COUNT 5
+#define MOVEMENT_CACHE_COUNT 3
 #include <time.h>
 #include <stdlib.h>
 
