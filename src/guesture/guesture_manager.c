@@ -95,10 +95,19 @@ static void s_accept_guesture(struct guesture_manager_s *manager,struct guesture
     struct guesture_manager_action_itr_s *action_itr = manager->action_itr;
     while( action_itr != NULL ){
         struct guesture_manager_action_itr_s *tmp = action_itr;
-        if(
-            action_itr->guesture == accept_item->guesture && 
-            (accept_item->current_accept_opts & GUSTURE_MATH_OPT_CLEAR) == 0
-        ){
+        
+        if( action_itr->guesture == accept_item->guesture ){
+            // LOG_DEBUG("emit_time(%ld.%d) - accpet_time(%ld.%d)=%d\n",
+            //     action_itr->action->emit_time.tv_sec,action_itr->action->emit_time.tv_usec,
+            //     accept_item->accpet_time.tv_sec,accept_item->accpet_time.tv_usec,
+            //     time_diff_ms(&action_itr->action->emit_time,&accept_item->accpet_time)
+            // );
+            if(
+                accept_item->accept_opts & GUSTURE_MATH_OPT_CLEAR_MOVE
+                // time_diff_ms(&action_itr->action->emit_time,&accept_item->accpet_time) < 0
+            ){
+                action_itr->action->pointer.move_type = NONE;
+            }
             itrack_post_own(manager->post_stage,action_itr->action);
         }else{
             free(action_itr->action);
@@ -198,7 +207,7 @@ struct guesture_item_s *guesture_manager_find_item_by_name(struct guesture_manag
 
 void guesture_manager_touch_start(struct guesture_manager_s *manager,const struct Touch *touch,int touch_count,const struct Touch *touchlist,int touchbit)
 {
-    manager->last_update_time = touch->last_update_time;
+    manager->update_time = touch->last_update_time;
     // manager
     manager->private.callback_state = GUESTURE_MANAGER_CALLBACK_START;
     // must no active guesture
@@ -249,7 +258,7 @@ void guesture_manager_touch_start(struct guesture_manager_s *manager,const struc
 }
 void guesture_manager_touch_update(struct guesture_manager_s *manager,const struct Touch *touch,int touch_idx,int touch_count,const struct Touch *touchlist,int touchbit)
 {
-    manager->last_update_time = touch->last_update_time;
+    manager->update_time = touch->last_update_time;
     
     // check if max timeout or max move dist match
     if(manager->private.state == MANAGER_STATE_CHANGING){
@@ -335,7 +344,7 @@ end:
 }
 
 void guesture_manager_touch_end(struct guesture_manager_s *manager,const struct Touch *touch,int touch_count,const struct Touch *touchlist,int touchbit){
-    manager->last_update_time = touch->last_update_time;
+    manager->update_time = touch->last_update_time;
 
     manager->private.callback_state = GUESTURE_MANAGER_CALLBACK_END;
     // todo:// wait about some guesture have post forbidden time

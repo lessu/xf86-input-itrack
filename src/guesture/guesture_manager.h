@@ -31,7 +31,7 @@
 
 typedef int guesture_match_opts_t;
 #define GUSTURE_MATH_OPT_NONE   0
-#define GUSTURE_MATH_OPT_CLEAR  1
+#define GUSTURE_MATH_OPT_CLEAR_MOVE  1
 
 struct post_stage_s;
 struct itrack_action_s;
@@ -53,7 +53,8 @@ struct guesture_item_s {
     } used;
     int priority;
     struct guesture_s *guesture;
-    guesture_match_opts_t current_accept_opts;
+    guesture_match_opts_t accept_opts;
+    struct timeval accpet_time;
 };
 
 struct guesture_manager_s
@@ -114,7 +115,7 @@ struct guesture_manager_s
 
 
     /** last time when manager was feed with a touch event*/
-    struct timeval last_update_time;
+    struct timeval update_time;
 };
 
 

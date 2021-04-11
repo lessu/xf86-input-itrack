@@ -24,7 +24,8 @@ void guesture_set_match(
     for(int i = 0 ; i < guesture->manager->private.current_guesture_count ; i ++ ){
         struct guesture_item_s *item = guesture->manager->private.current_guesture_item_list[i];
         if(  item->used==USING && item->guesture == guesture ){
-            item->current_accept_opts = opts;
+            item->accept_opts = opts;
+            item->accpet_time = *guesture_get_time(guesture);
         }
     }
 
@@ -141,5 +142,5 @@ void guesture_post_scroll_end(struct guesture_s *guesture){
 }
 
 const struct timeval *guesture_get_time(struct guesture_s *guesture){
-    return &guesture->manager->last_update_time;
+    return &guesture->manager->update_time;
 }
