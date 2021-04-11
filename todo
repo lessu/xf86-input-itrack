@@ -10,3 +10,38 @@ OK -- 2.three finger drag-> leave, 1 finger move ,won't cancel drag status
 2.move current + somefn(cached)
 
 3.when leave clear cached 
+
+
+## merged
+1.会打开2次device
+调查为什么？
+
+输入键盘时误触
+原因：
+    new finger
+    update thumb*n
+    release finger
+解决方案：
+    new finger 时判断是否时thumb 如果时thumb 直接无视
+
+有时候单击(双击)会锁定
+
+OK - tap 极小概率失效（原因是 操作快时，累计update太大）
+
+
+键盘
+register a new input class
+
+https://www.x.org/releases/X11R7.7/doc/xorg-server/Xinput.html
+
+or
+use other key send tool
+
+https://wiki.archlinux.org/index.php/Libinput
+
+
+# See
+ * How to handle multitouch: http://www.x.org/wiki/Development/Documentation/Multitouch/
+ * Howto about xinput: http://www.x.org/wiki/Development/Documentation/XorgInputHOWTO/
+ * Example usage: https://gitlab.com/at-home-modifier/at-home-modifier-evdev/commit/d171b3d9194581cb6ed59dbe45d6cbf009dc0eaa?view=parallel
+ * Patch were smooth scrolling were introduced: https://lists.x.org/archives/xorg-devel/2011-September/025835.html
