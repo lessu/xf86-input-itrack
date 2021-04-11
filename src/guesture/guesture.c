@@ -15,7 +15,19 @@ void guesture_set_post_fn(struct guesture_s *guesture,GuestureActionFn fn,void *
     guesture->action_fn = fn;
     guesture->action_userdata = data;
 }
-void guesture_set_match(struct guesture_s *guesture,enum guesture_match_e set_match){
+void guesture_set_match(
+    struct guesture_s *guesture,
+    enum guesture_match_e set_match,
+    guesture_match_opts_t opts
+){
+    /** todo://refactory this */
+    for(int i = 0 ; i < guesture->manager->private.current_guesture_count ; i ++ ){
+        struct guesture_item_s *item = guesture->manager->private.current_guesture_item_list[i];
+        if(  item->used==USING && item->guesture == guesture ){
+            item->current_accept_opts = opts;
+        }
+    }
+
     if(guesture->status.match_state != GUESTURE_MATHING){
         /** guestures should always check matching status */        
     }else{

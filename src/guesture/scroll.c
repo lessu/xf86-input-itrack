@@ -56,7 +56,7 @@ static void on_update(void *userdata,const struct Touch *touches,int touch_bit){
     assert(touch!=NULL);
     
     if(guesture->guesture.status.match_state == GUESTURE_MATHING){
-        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK);
+        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK,0);
     }
  	
     // final algorithm 

@@ -66,7 +66,7 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
             touch1->dx,touch1->dy,touch2->dx,touch2->dy
         );
         if( cos_theta1 > cos(THRESH_HOLD_ANGLE) && cos_theta2 > cos(THRESH_HOLD_ANGLE)){
-            guesture_set_match(&guesture->guesture,TRUE);
+            guesture_set_match(&guesture->guesture,TRUE,0);
             guesture->start_distance2_to_mid = math_dist2((touch1->x - mid_point_x) / 2,(touch1->y - mid_point_y)/2);
 
             // todo:// pinch and rotate is not supported by xf86 directly,we convert them as touch event.

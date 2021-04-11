@@ -83,7 +83,11 @@ void guesture_set_post_fn(struct guesture_s *guesture,GuestureActionFn fn,void *
 /**
  * called inner guesture
  */ 
-void guesture_set_match(struct guesture_s *guesture,enum guesture_match_e set_match);
+void guesture_set_match(
+    struct guesture_s *guesture,
+    enum guesture_match_e set_match,
+    int/**guesture_match_opts_t*/ opts
+);
 
 /**
  * actions

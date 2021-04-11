@@ -95,7 +95,10 @@ static void s_accept_guesture(struct guesture_manager_s *manager,struct guesture
     struct guesture_manager_action_itr_s *action_itr = manager->action_itr;
     while( action_itr != NULL ){
         struct guesture_manager_action_itr_s *tmp = action_itr;
-        if(action_itr->guesture == accept_item->guesture){
+        if(
+            action_itr->guesture == accept_item->guesture && 
+            (accept_item->current_accept_opts & GUSTURE_MATH_OPT_CLEAR) == 0
+        ){
             itrack_post_own(manager->post_stage,action_itr->action);
         }else{
             free(action_itr->action);

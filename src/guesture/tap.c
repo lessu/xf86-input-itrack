@@ -46,19 +46,19 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
     if(is_thumb){
         TAP_GUESTURE_DEBUG("ignore thumb\n");
        // not a tap
-        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO);
+        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO,0);
     }else if( diff_ms > TAP_TIME_MAX_HOLD_TIME){
         TAP_GUESTURE_DEBUG("[tap] diff_ms > TAP_TIME_MAX_HOLD_TIME\n");
        // not a tap
-        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO);
+        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO,0);
     }else if( max_move_dist > TAP_MOVE_UPDATE_DIST){
         TAP_GUESTURE_DEBUG("[tap] max_move_dist > TAP_MOVE_UPDATE_DIST\n");
         // not a tap
-        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO);
+        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO,0);
     }else if( dist2 > TAP_MOVE_TOTAL_DIST2){
         TAP_GUESTURE_DEBUG("[tap] dist2 > TAP_MOVE_TOTAL_DIST2\n");
         // not a tap
-        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO);
+        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_NO,0);
     }
     return ;
 }
@@ -70,7 +70,7 @@ static BOOL on_end(void *user_data,BOOL is_cancel,int touch_count){
  	gettimeofday(&time, NULL);
     // if(guesture->update_event_count > 0){
         TAP_GUESTURE_DEBUG("TAP %d Recognized\n",guesture->guesture.props.required_touches);
-        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK);
+        guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK,0);
         int tap_button = -1;
         
         if( guesture->guesture.props.required_touches == 1 ){

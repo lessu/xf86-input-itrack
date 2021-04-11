@@ -11,8 +11,8 @@
  * or this touch movement least than `dist`
  * util we can sure no more touch will come
  */ 
-#define GUESTURE_PRE_WAITING_TIME  80
-#define GUESTURE_PRE_WAITTING_DIST 30
+#define GUESTURE_PRE_WAITING_TIME  100
+#define GUESTURE_PRE_WAITTING_DIST 50
 /** 
  * when touch count changes,
  * It will go into changing state.
@@ -26,6 +26,12 @@
 #define GESTURE_BUTTON_LEFT 0
 #define GESTURE_BUTTON_MIDDLE 1
 #define GESTURE_BUTTON_RIGHT 2
+
+
+
+typedef int guesture_match_opts_t;
+#define GUSTURE_MATH_OPT_NONE   0
+#define GUSTURE_MATH_OPT_CLEAR  1
 
 struct post_stage_s;
 struct itrack_action_s;
@@ -47,6 +53,7 @@ struct guesture_item_s {
     } used;
     int priority;
     struct guesture_s *guesture;
+    guesture_match_opts_t current_accept_opts;
 };
 
 struct guesture_manager_s
