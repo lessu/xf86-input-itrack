@@ -103,14 +103,14 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 	SetScrollValuator(dev, 3, SCROLL_TYPE_HORIZONTAL, 1.0, SCROLL_FLAG_NONE);
 
 
-	// if(!InitKeyboardDeviceStruct(
-	// 	dev,
-	// 	NULL,NULL,
-	// 	s_keyboard_control
-	// )){
-	// 	LOG_ERROR("InitKeyboardDeviceStruct for itrack failed");
-	// 	return BadRequest;
-	// }
+	if(!InitKeyboardDeviceStruct(
+		dev,
+		NULL,NULL,
+		s_keyboard_control
+	)){
+		LOG_ERROR("InitKeyboardDeviceStruct for itrack failed");
+		return BadRequest;
+	}
 
 
 	local->fd = xf86OpenSerial(local->options);
