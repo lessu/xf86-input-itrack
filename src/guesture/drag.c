@@ -44,7 +44,7 @@ static void on_update(void *user_data,const struct Touch *touches,int touch_bit)
     }else{
 
         if(guesture->guesture.status.match_state == GUESTURE_MATHING){
-            guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK,0);
+            guesture_set_match(&guesture->guesture,GUESTURE_MATCH_OK,GUSTURE_MATH_OPT_CLEAR_MOVE);
             guesture_post_button_down(&guesture->guesture,SWIPE3_BUTTON);
         }
 
